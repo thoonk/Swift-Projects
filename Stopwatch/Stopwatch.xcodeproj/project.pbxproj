@@ -13,6 +13,8 @@
 		08BB7046253DB265002AF7EC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08BB7044253DB265002AF7EC /* Main.storyboard */; };
 		08BB7048253DB266002AF7EC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 08BB7047253DB266002AF7EC /* Assets.xcassets */; };
 		08BB704B253DB266002AF7EC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08BB7049253DB266002AF7EC /* LaunchScreen.storyboard */; };
+		08BB7056253DB6B3002AF7EC /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BB7055253DB6B3002AF7EC /* HistoryTableViewCell.swift */; };
+		08BB7059253DB786002AF7EC /* Stopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BB7058253DB786002AF7EC /* Stopwatch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		08BB7047253DB266002AF7EC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		08BB704A253DB266002AF7EC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		08BB704C253DB266002AF7EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		08BB7055253DB6B3002AF7EC /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
+		08BB7058253DB786002AF7EC /* Stopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stopwatch.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +63,9 @@
 				08BB703E253DB265002AF7EC /* AppDelegate.swift */,
 				08BB7040253DB265002AF7EC /* SceneDelegate.swift */,
 				08BB7042253DB265002AF7EC /* ViewController.swift */,
+				08BB7058253DB786002AF7EC /* Stopwatch.swift */,
 				08BB7044253DB265002AF7EC /* Main.storyboard */,
+				08BB7055253DB6B3002AF7EC /* HistoryTableViewCell.swift */,
 				08BB7047253DB266002AF7EC /* Assets.xcassets */,
 				08BB7049253DB266002AF7EC /* LaunchScreen.storyboard */,
 				08BB704C253DB266002AF7EC /* Info.plist */,
@@ -139,6 +145,8 @@
 			files = (
 				08BB7043253DB265002AF7EC /* ViewController.swift in Sources */,
 				08BB703F253DB265002AF7EC /* AppDelegate.swift in Sources */,
+				08BB7059253DB786002AF7EC /* Stopwatch.swift in Sources */,
+				08BB7056253DB6B3002AF7EC /* HistoryTableViewCell.swift in Sources */,
 				08BB7041253DB265002AF7EC /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
