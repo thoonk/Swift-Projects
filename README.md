@@ -1,2 +1,2 @@
 # Swift_Projects
-simple projects for study
+simple swift apps for study
