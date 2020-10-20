@@ -10,7 +10,7 @@ import UIKit
 class HistoryTableViewCell: UITableViewCell {
     
     @IBOutlet weak var lapLabel: UILabel!
-    @IBOutlet weak var lapTimeLabel: UILabel!
+    @IBOutlet weak var lapTimerLabel: UILabel!
 
 
     override func awakeFromNib() {
