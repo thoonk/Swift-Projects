@@ -40,14 +40,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="historyCell" id="Xom-CI-qZm" customClass="HistoryTableViewCell" customModule="Stopwatch" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Xom-CI-qZm" id="KXE-Gg-7Yc">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lap1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h8h-UV-ygY">
-                                                    <rect key="frame" x="30" y="11" width="70" height="21.5"/>
+                                                    <rect key="frame" x="30" y="11" width="70" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="70" id="wxw-ip-CXg"/>
                                                     </constraints>
@@ -55,8 +55,8 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UIi-vw-X2u">
-                                                    <rect key="frame" x="287" y="11" width="100" height="22"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UIi-vw-X2u">
+                                                    <rect key="frame" x="269" y="11" width="118" height="21.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="100" id="5Qg-j0-HUs"/>
                                                     </constraints>
@@ -69,7 +69,7 @@
                                                 <constraint firstItem="h8h-UV-ygY" firstAttribute="leading" secondItem="KXE-Gg-7Yc" secondAttribute="leadingMargin" constant="10" id="5mc-gh-x2L"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="UIi-vw-X2u" secondAttribute="trailing" constant="7" id="Dgu-DD-jm3"/>
                                                 <constraint firstItem="UIi-vw-X2u" firstAttribute="top" secondItem="KXE-Gg-7Yc" secondAttribute="topMargin" id="N5h-46-ovO"/>
-                                                <constraint firstItem="UIi-vw-X2u" firstAttribute="leading" secondItem="h8h-UV-ygY" secondAttribute="trailing" constant="187" id="b0V-wh-GNb"/>
+                                                <constraint firstItem="UIi-vw-X2u" firstAttribute="leading" secondItem="h8h-UV-ygY" secondAttribute="trailing" constant="169" id="b0V-wh-GNb"/>
                                                 <constraint firstItem="h8h-UV-ygY" firstAttribute="top" secondItem="KXE-Gg-7Yc" secondAttribute="topMargin" id="gOP-Yl-gpR"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="h8h-UV-ygY" secondAttribute="bottom" constant="0.5" id="kfZ-b8-zq1"/>
                                                 <constraint firstItem="UIi-vw-X2u" firstAttribute="bottom" secondItem="KXE-Gg-7Yc" secondAttribute="bottomMargin" id="xoy-Jy-lze"/>
@@ -100,11 +100,22 @@
                                     <action selector="startStopAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uDK-Hm-Ou0"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00.00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W9t-Xe-bHg">
+                                <rect key="frame" x="224.5" y="276" width="107" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="107" id="dGS-JT-Usl"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="W9t-Xe-bHg" firstAttribute="top" secondItem="DJK-bt-NaF" secondAttribute="bottom" constant="1" id="1fN-Db-k61"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="DJK-bt-NaF" secondAttribute="trailing" constant="82.5" id="21K-9k-2Nb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="W9t-Xe-bHg" secondAttribute="trailing" constant="82.5" id="43A-vC-Rxe"/>
                             <constraint firstItem="DJK-bt-NaF" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="82.5" id="6xs-Wx-327"/>
                             <constraint firstItem="Vwz-WO-P0u" firstAttribute="top" secondItem="DJK-bt-NaF" secondAttribute="bottom" constant="101" id="8c4-Ic-qqA"/>
                             <constraint firstItem="QAr-xk-eP7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="G6x-nT-ghU"/>
@@ -122,9 +133,10 @@
                     <navigationItem key="navigationItem" title="Stopwatch" id="yOx-FK-O6z"/>
                     <connections>
                         <outlet property="lapResetBtn" destination="GkT-R0-LqD" id="a3a-Mb-XaA"/>
+                        <outlet property="lapTimerLabel" destination="W9t-Xe-bHg" id="K4T-1p-lMr"/>
                         <outlet property="lapsTableView" destination="QAr-xk-eP7" id="cdH-tq-BvC"/>
+                        <outlet property="mainTimerLabel" destination="DJK-bt-NaF" id="E9X-ZG-PBw"/>
                         <outlet property="startStopBtn" destination="Vwz-WO-P0u" id="9hm-Yq-9qJ"/>
-                        <outlet property="timerLabel" destination="DJK-bt-NaF" id="ujR-pY-av9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

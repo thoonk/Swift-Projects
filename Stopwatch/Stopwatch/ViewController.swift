@@ -10,14 +10,15 @@ import UIKit
 class ViewController: UIViewController, UITableViewDelegate {
     
     //MARK: - Property
-    fileprivate let mainStopwatch: Stopwatch = Stopwatch()
-    fileprivate let lapStopwatch: Stopwatch = Stopwatch()
-    fileprivate let cellIdentifier: String = "historyCell"
-    fileprivate var isStart: Bool = false
-    fileprivate var laps: [String] = []
+    private let mainStopwatch: Stopwatch = Stopwatch()
+    private let lapStopwatch: Stopwatch = Stopwatch()
+    private let cellIdentifier: String = "historyCell"
+    private var isStart: Bool = false
+    private var laps: [String] = []
     
     //MARK: - UI Components
-    @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var mainTimerLabel: UILabel!
+    @IBOutlet weak var lapTimerLabel: UILabel!
     @IBOutlet weak var lapResetBtn: UIButton!
     @IBOutlet weak var startStopBtn: UIButton!
     @IBOutlet weak var lapsTableView: UITableView!
@@ -67,7 +68,7 @@ class ViewController: UIViewController, UITableViewDelegate {
             
         // 랩 버튼 누를 경우
         } else {
-            if let timerText = timerLabel.text {
+            if let timerText = lapTimerLabel.text {
                 laps.append(timerText)
             }
             lapsTableView.reloadData()
@@ -81,51 +82,49 @@ class ViewController: UIViewController, UITableViewDelegate {
     
     //MARK: - Custom Methods
     /// 버튼 상태 변경
-    fileprivate func changeBtnStatus(_ button: UIButton, title: String, titleColor: UIColor){
+    private func changeBtnStatus(_ button: UIButton, title: String, titleColor: UIColor){
         button.setTitle(title, for: UIControl.State())
         button.setTitleColor(titleColor, for: UIControl.State())
     }
     /// 메인 스탑워치 타이머 리셋
-    fileprivate func resetMainTimer(){
-        resetTimer(mainStopwatch)
+    private func resetMainTimer(){
+        resetTimer(mainStopwatch, label: mainTimerLabel)
         laps.removeAll()
         lapsTableView.reloadData()
-        timerLabel.text = "00:00.00"
     }
     /// 랩 스탑워치 타이머 리셋
-    fileprivate func resetLapTimer() {
-        resetTimer(lapStopwatch)
+    private func resetLapTimer() {
+        resetTimer(lapStopwatch, label: lapTimerLabel)
     }
     /// 스탑워치 타이머 리셋
-    fileprivate func resetTimer(_ stopwatch: Stopwatch){
+    private func resetTimer(_ stopwatch: Stopwatch, label: UILabel){
         stopwatch.timer.invalidate()
         stopwatch.counter = 0.0
+        label.text = "00:00.00"
     }
     
     /// 스탑워치 타이머 업데이트
-    func updateTimer(_ stopwatch: Stopwatch){
+    func updateTimer(_ stopwatch: Stopwatch, label: UILabel){
         stopwatch.counter = stopwatch.counter + 0.035
         
         var minutes: String = "\((Int)(stopwatch.counter / 60))"
-        // 1의 자리의 경우
         if (Int)(stopwatch.counter / 60) < 10 {
-            minutes = "0\((Int)(stopwatch.counter / 60))"
+          minutes = "0\((Int)(stopwatch.counter / 60))"
         }
         
-        var seconds: String = String(format: "%2.f", (stopwatch.counter.truncatingRemainder(dividingBy: 60)))
-        // 1의 자리의 경우
+        var seconds: String = String(format: "%.2f", (stopwatch.counter.truncatingRemainder(dividingBy: 60)))
         if stopwatch.counter.truncatingRemainder(dividingBy: 60) < 10 {
-            seconds = "0" + seconds
+          seconds = "0" + seconds
         }
-        timerLabel.text = minutes + ":" + seconds
+        label.text = minutes + ":" + seconds
     }
     /// 메인 스탑워치 업데이트
     @objc func updateMainTimer(){
-        updateTimer(mainStopwatch)
+        updateTimer(mainStopwatch, label: mainTimerLabel)
     }
     /// 랩 스탑워치 업데이트
     @objc func updateLapTimer(){
-        updateTimer(lapStopwatch)
+        updateTimer(lapStopwatch, label: lapTimerLabel)
     }
 }
 
