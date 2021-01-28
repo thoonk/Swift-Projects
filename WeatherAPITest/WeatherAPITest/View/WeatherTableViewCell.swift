@@ -12,13 +12,15 @@ class WeatherTableViewCell: UITableViewCell {
     @IBOutlet weak var weekLabel: UILabel!
     @IBOutlet weak var weatherImageView: UIImageView!
     @IBOutlet weak var tempLabel: UILabel!
+    @IBOutlet weak var pm10Label: UILabel!
+    @IBOutlet weak var pm25Label: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
-        weekLabel.adjustsFontSizeToFitWidth = true
-        tempLabel.adjustsFontSizeToFitWidth = true 
+//        weekLabel.adjustsFontSizeToFitWidth = true
+//        tempLabel.adjustsFontSizeToFitWidth = true 
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
