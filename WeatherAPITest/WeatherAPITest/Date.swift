@@ -8,10 +8,11 @@
 import Foundation
 
 extension Date {
-    func toKST() -> String {
+    func toLocalized(with id: String) -> String {
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-            dateFormatter.timeZone = TimeZone(identifier: "KST")
+//            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+            dateFormatter.dateFormat = "EEEE"
+            dateFormatter.timeZone = TimeZone(identifier: id)
             return dateFormatter.string(from: self)
     }
 }

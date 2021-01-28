@@ -7,5 +7,4 @@ target 'WeatherAPITest' do
 
   # Pods for WeatherAPITest
   pod 'Alamofire'
-  pod 'SwiftyJSON'
 end

@@ -29,7 +29,7 @@ class WeatherAPIManager {
             case.success(let data):
                 guard let weatherData = self.parseJSON(data) else { return }
                 self.weekData = weatherData
-                print(weatherData)
+//                print(weatherData)
                 completion(weatherData)
             case .failure(let error):
                 print(error.localizedDescription)
@@ -37,7 +37,7 @@ class WeatherAPIManager {
         }
     }
     
-    func fetchFcstData (lat: CLLocationDegrees, lon: CLLocationDegrees, completion: @escaping (_ result: [WeatherFcst]) -> Void) {
+    func fetchFcstData (lat: String, lon: String, completion: @escaping (_ result: [WeatherFcst]) -> Void) {
         let urlString = "\(baseUrl)&lat=\(lat)&lon=\(lon)"
         requestFcstData(with: urlString, completion: completion)
     }

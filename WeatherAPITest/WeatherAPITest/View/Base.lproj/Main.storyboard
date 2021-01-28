@@ -28,13 +28,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Friday" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CYy-r3-G1B">
-                                                    <rect key="frame" x="20" y="32" width="80" height="36"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                    <rect key="frame" x="20" y="32" width="58.5" height="36"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="n1O-WR-jWc">
-                                                    <rect key="frame" x="182" y="14" width="50" height="72.5"/>
+                                                    <rect key="frame" x="179" y="14" width="50" height="72.5"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="snow" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="2II-yh-JE3">
                                                             <rect key="frame" x="0.0" y="0.5" width="50" height="49"/>
@@ -53,12 +53,11 @@
                                                 </stackView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="n1O-WR-jWc" firstAttribute="leading" secondItem="CYy-r3-G1B" secondAttribute="trailing" constant="82" id="2BO-We-6os"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="CYy-r3-G1B" secondAttribute="bottom" constant="21" id="WBh-h1-5u5"/>
                                                 <constraint firstItem="n1O-WR-jWc" firstAttribute="top" secondItem="GfJ-eS-2in" secondAttribute="topMargin" constant="3" id="bhE-8k-1fk"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="n1O-WR-jWc" secondAttribute="bottom" constant="2.5" id="diR-Tv-ajX"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="n1O-WR-jWc" secondAttribute="trailing" constant="162" id="hmd-7y-YCj"/>
                                                 <constraint firstItem="CYy-r3-G1B" firstAttribute="top" secondItem="GfJ-eS-2in" secondAttribute="topMargin" constant="21" id="pmt-M4-69b"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="n1O-WR-jWc" secondAttribute="trailing" constant="165" id="r5B-PN-z4Z"/>
                                                 <constraint firstItem="CYy-r3-G1B" firstAttribute="leading" secondItem="GfJ-eS-2in" secondAttribute="leadingMargin" id="wco-x9-BfR"/>
                                             </constraints>
                                         </tableViewCellContentView>
