@@ -10,20 +10,21 @@ import Alamofire
 
 class PMAPIManger {
     
+    private enum URLType {
+        case current
+        case forecast
+    }
+    
     static let shared = PMAPIManger()
     private init() {}
-    
-    private let currentUrl = "https://api.openweathermap.org/data/2.5/air_pollution?appid=APIKey"
-    
-    private let fcstUrl = "https://api.openweathermap.org/data/2.5/air_pollution/forecast?appid=APIKey"
-    
+        
     func fetchCurrentData(lat: String, lon: String, completion: @escaping (_ result: PMModel) -> Void) {
-        let urlString = "\(currentUrl)&lat=\(lat)&lon=\(lon)"
+        let urlString = "\(createUrl(URLType.current))&lat=\(lat)&lon=\(lon)"
         requestCurrentData(with: urlString, completion: completion)
     }
     
-    func fetchFcstData(lat: String, lon: String, completion: @escaping (_ result: [PMModel]) -> Void) {
-        let urlString = "\(fcstUrl)&lat=\(lat)&lon=\(lon)"
+    func fetchFcstData(lat: String, lon: String, completion: @escaping (_ result: [[PMModel]]) -> Void) {
+        let urlString = "\(createUrl(URLType.forecast))&lat=\(lat)&lon=\(lon)"
         requestFcstData(with: urlString, completion: completion)
     }
 
@@ -40,7 +41,7 @@ class PMAPIManger {
         }
     }
     
-    func requestFcstData(with url: String, completion: @escaping (_ result: [PMModel]) -> Void) {
+    func requestFcstData(with url: String, completion: @escaping (_ result: [[PMModel]]) -> Void) {
         AF.request(url).responseJSON { response in
             switch response.result {
             case.success(let data):
@@ -68,27 +69,59 @@ class PMAPIManger {
         }
     }
     
-    private func parseFcstJSON(_ data: Any) -> [PMModel]? {
+    private func parseFcstJSON(_ data: Any) -> [[PMModel]]? {
         do {
             let pmData = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
             let result = try JSONDecoder().decode(PMData.self, from: pmData)
-
-            var pms: [PMModel] = []
+            var pmDay: [PMModel] = []
+            var pms: [[PMModel]] = []
 
             for i in 0..<result.list.count {
+                
                 let dt = Date(timeIntervalSince1970: result.list[i].dt).toLocalized(with: "KST", by: "normal")
                 let time = dt.split(separator: " ")
                 let pm10 = result.list[i].components.pm10
                 let pm25 = result.list[i].components.pm25
-                if time[1] == "12:00", dt >= Date().toLocalized(with: "KST", by: "short") + " 12:00" {
-                    let pm = PMModel(dateTime: dt, pm10: pm10, pm25: pm25)
-                    pms.append(pm)
+                
+                if pmDay.count == 3 {
+                    pms.append(pmDay)
+                    pmDay = []
+                }
+                
+                if dt >= Date().toLocalized(with: "KST", by: "short") {
+                    if time[1] == "09:00" || time[1] == "14:00" || time[1] == "19:00" {
+                        let pm = PMModel(dateTime: dt, pm10: pm10, pm25: pm25)
+                        pmDay.append(pm)
+                    }
                 }
             }
+            // 날씨예보 개수만큼 맞추기
+            for _ in 0..<4 {
+                for _ in 0..<3 {
+                    let nilPM = PMModel(dateTime: "-", pm10: -0.1234, pm25: -0.1234)
+                    pmDay.append(nilPM)
+                }
+                pms.append(pmDay)
+            }
+            
             return pms
         } catch {
             print("PM Fcst JSON Error: \(error.localizedDescription)")
             return nil
         }
+    }
+    
+    private func createUrl(_ type: URLType) -> String {
+        var urlString = C.baseUrl
+        
+        switch type {
+        case .current:
+            urlString += "/air_pollution?"
+        case .forecast:
+            urlString += "/air_pollution/forecast?"
+        }
+        urlString += "appid=\(C.apiKey)"
+        
+        return urlString
     }
 }

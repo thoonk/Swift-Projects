@@ -15,30 +15,30 @@ struct PMModel {
     var pm10Status: String {
         switch pm10 {
         case 0...30.99:
-            return "Good"
+            return "좋음"
         case 31...50.99:
-            return "Normal"
+            return "보통"
         case 51...100.99:
-            return "Bad"
+            return "나쁨"
         case 101...:
-            return "Very Bad"
+            return "최악"
         default:
-            return "Unknown"
+            return "-"
         }
     }
     
     var pm25Status: String {
         switch pm25 {
         case 0...15.99:
-            return "Good"
+            return "좋음"
         case 16...25.99:
-            return "Normal"
+            return "보통"
         case 26...50.99:
-            return "Bad"
+            return "나쁨"
         case 51...:
-            return "Very Bad"
+            return "최악"
         default:
-            return "Unknown"
+            return "-"
         }
     }
 }

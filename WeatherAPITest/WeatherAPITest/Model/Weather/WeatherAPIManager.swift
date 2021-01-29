@@ -10,20 +10,21 @@ import Alamofire
 
 class WeatherAPIManager {
     
+    private enum URLType {
+        case current
+        case forecast
+    }
+    
     static let shared = WeatherAPIManager()
     private init() {}
-    
-    private let currentUrl = "https://api.openweathermap.org/data/2.5/weather?appid=APIKey&units=metric"
-    
-    private let fcstUrl = "https://api.openweathermap.org/data/2.5/onecall?appid=APIKey&units=metric&exclude=hourly,minutely,current"
-    
+        
     func fetchCurrentData(lat: String, lon: String, completion: @escaping (_ result: WeatherCurrent) -> Void) {
-        let urlString = "\(currentUrl)&lat=\(lat)&lon=\(lon)"
+        let urlString = "\(createUrl(URLType.current))&lat=\(lat)&lon=\(lon)"
         requestCurrentData(with: urlString, completion: completion)
     }
     
     func fetchFcstData (lat: String, lon: String, completion: @escaping (_ result: [WeatherFcst]) -> Void) {
-        let urlString = "\(fcstUrl)&lat=\(lat)&lon=\(lon)"
+        let urlString = "\(createUrl(URLType.forecast))&lat=\(lat)&lon=\(lon)"
         requestFcstData(with: urlString, completion: completion)
     }
     
@@ -69,8 +70,8 @@ class WeatherAPIManager {
             let weatherData = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
             let result = try JSONDecoder().decode(WeatherFcstData.self, from: weatherData)
             var weathers: [WeatherFcst] = []
-
-            for i in 0..<5 {
+            
+            for i in 0..<result.daily.count {
                 let currentData = result.daily[i]
                 let weekDate: String = Date(timeIntervalSince1970: currentData.dt).toLocalized(with: result.timezone, by: "day")
                 let minTemp = currentData.temp.min
@@ -86,5 +87,19 @@ class WeatherAPIManager {
             print("Weather Fcst JSON Error: \(error.localizedDescription)")
             return nil
         }
+    }
+    
+    private func createUrl(_ type: URLType) -> String {
+        var urlString = C.baseUrl
+        
+        switch type {
+        case .current:
+            urlString += "/weather?units=metric"
+        case .forecast:
+            urlString += "/onecall?units=metric&exclude=hourly,minutely,current"
+        }
+        urlString += "&appid=\(C.apiKey)"
+        
+        return urlString
     }
 }

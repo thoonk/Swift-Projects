@@ -36,7 +36,7 @@ class ViewController: UIViewController {
     
     var weekWeather: [WeatherFcst?] = [] 
     
-    var weekPM: [PMModel?] = [] {
+    var weekPM: [[PMModel?]] = [] {
         didSet {
             tableView.reloadData()
         }
@@ -166,14 +166,17 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell: WeatherTableViewCell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as? WeatherTableViewCell,
               let weather: WeatherFcst = self.weekWeather[indexPath.row],
-              let pm: PMModel = self.weekPM[indexPath.row]
+              let morningPM: PMModel = self.weekPM[indexPath.row][0],
+              let afternoonPM: PMModel = self.weekPM[indexPath.row][1],
+              let eveningPM: PMModel = self.weekPM[indexPath.row][2]
         else { return UITableViewCell() }
         
         cell.weekLabel.text = "\(weather.dateTime)"
-        cell.tempLabel.text = "\(weather.maxTempString)/\(weather.minTempString)"
+        cell.tempLabel.text = "\(weather.maxTempString) / \(weather.minTempString)"
         cell.weatherImageView.image = UIImage(systemName: weather.conditionName)
-        cell.pm10Label.text = "\(pm.pm10Status)"
-        cell.pm25Label.text = "\(pm.pm25Status)"
+        cell.morningPMLabel.text = "\(morningPM.pm10Status) / \(morningPM.pm25Status)"
+        cell.afternoonPMLabel.text = "\(afternoonPM.pm10Status) / \(afternoonPM.pm25Status)"
+        cell.eveningPMLabel.text = "\(eveningPM.pm10Status) / \(eveningPM.pm25Status)"
                 
         return cell
     }
