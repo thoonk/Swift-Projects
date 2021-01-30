@@ -39,6 +39,8 @@ class ViewController: UIViewController {
     var weekPM: [[PMModel?]] = [] {
         didSet {
             tableView.reloadData()
+            activityIndicatorView.stopAnimating()
+            activityIndicatorView.isHidden = true
         }
     }
     
@@ -48,10 +50,10 @@ class ViewController: UIViewController {
     @IBOutlet weak var currentWeatherLabel: UILabel!
     @IBOutlet weak var pm10Label: UILabel!
     @IBOutlet weak var pm25Label: UILabel!
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setDataUsingLocation()
     }
     
@@ -72,27 +74,38 @@ class ViewController: UIViewController {
             self.longitude = "\(lon)"
             print(self.latitude, self.longitude)
 
+            activityIndicatorView.startAnimating()
+            
+            let dispatchGroup = DispatchGroup()
+            dispatchGroup.enter()
             WeatherAPIManager.shared.fetchCurrentData(lat: self.latitude, lon: self.longitude) { [weak self] (result) in
                 guard let self = self else { return }
                 self.currentWeather = result
+                dispatchGroup.leave()
             }
             
+            dispatchGroup.enter()
             WeatherAPIManager.shared.fetchFcstData(lat: self.latitude, lon: self.longitude) { [weak self] (result) in
                 guard let self = self else { return }
                 self.weekWeather = result
-                print(self.weekWeather)
+                dispatchGroup.leave()
             }
-            
+            dispatchGroup.enter()
             PMAPIManger.shared.fetchCurrentData(lat: self.latitude, lon: self.longitude) { [weak self] (result) in
                 guard let self = self else { return }
                 self.currentPM = result
+                dispatchGroup.leave()
             }
-            
+            dispatchGroup.enter()
             PMAPIManger.shared.fetchFcstData(lat: self.latitude, lon: self.longitude) { [weak self] (result) in
                 guard let self = self else { return }
                 self.weekPM = result
-                print(self.weekPM)
+                dispatchGroup.leave()
             }
+            dispatchGroup.notify(queue: .global(qos: .userInteractive)){
+                print("jobs are completed asynchronous")
+            }
+            print("job enter finished")
         }
     }
     
@@ -146,6 +159,7 @@ extension ViewController: CLLocationManagerDelegate {
                 } else {
                     print("Error: ", error!)
                 }
+                
                 self.locationLabel.text = "\(state) \(city) \(sub)"
             }
         }
