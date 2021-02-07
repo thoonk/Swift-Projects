@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Jnb-uq-Jmz">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="1000"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y3A-Dv-BhE">
+                                <rect key="frame" x="0.0" y="44" width="414" height="922"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YFA-Rj-gF5" userLabel="ContainerView">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="1805.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Ow-E3-tzA">
+                                                <rect key="frame" x="10" y="10" width="394" height="1785.5"/>
+                                                <mutableString key="text">iOS13 이전 버전의 앱에서는 앱 델리게이트가 앱의 실행과 포그라운드, 백그라운드에 대한 로직을 처리하는 역할을 했다. 
+iOS13 버전부터는 앱델리게이트의 역할이 앱델리게이트와 scene델리게이트로 나뉘어졌다. 그 이유는 아이패드OS의 새로운 멀티윈도우지원 기능의 결과이며 앱델리게이트의 작업을 두 개로 분할한다. 
+
+appdelegate
+	- 애플리케이션 라이프사이클 및 설정을 담당한다.
+sceneDelegate 
+	- 화면에 표시되는 내용 (Windows and scenes)를 처리하고 앱이 표시되는 방식을 관리한다. 
+	
+앱 델리게이트와 scene델리게이트 역할
+
+AppDelegate
+	- 앱 델리게이트는 여전히 앱의 주요 진입점이다. 앱델리게이트 메서드는 애플리케이션 레벨의 라이프사이클 이벤트에 대해 처리하는 책임이 있다.
+	1. func application(_:didFinishLaunchingWithOptions:) -&gt; Bool
+	- 이 메서드는 앱이 시작되고 앱의 설정이 완료되면 호출된다. 13버전이전에는 UIWindow 객체 구성과 뷰 컨트롤러 인스턴스를 UIWindow객체에 할당하여 화면에 표시할 수 있었다. iOS13버전부터는 앱에 scene이 있는 경우 앱델리게이트는 더 이상 이를 처리할 책임이 없고 SceneDelegate에 있다.
+	
+	2. func application(_:configurationForConnecting:options:) -&gt; UISceneConfiguration
+	- 이 메서드는 앱에 표시할 새 장면이나 창이 필요할 때마다 호출된다. 이 메서드는 앱 시작시 호출되지 않고 새 장면이나 새 창을 가져와야하는 경우에만 호출된다.
+	
+	3. func application(_:didDiscardSceneSessions:)
+	- 이 메서드는 사용자가 멀티 태스킹 창에서 스와이프하는 것과 같이 장면을 삭제할 때 또는 프로그래밍 방식으로 삭제될 때 호출된다. 이 메서드는 사용자가 장면을 삭제할 때 앱이 실행되지 않는 경우 didFinishLaunchingWithOptions:) 메서드가 호출된 직후 모든 삭제된 장면에 대해 호출된다.
+
+	- 추가적으로 이 메서드들은 외부 서비스(푸시 알림 등록, 위치 서비스, 앱 종료 등)을 여전히 처리할 수 있다. 
+
+SceneDelegate 
+	- iOS13버전부터는 SceneDelegate는 AppDelegate로부터 일부 책임을 맡는다. AppDelegate에서의 UIWindow와 관련된 부분은 이제 SceneDelegate 의 UIScene에서 맡는다. 앱은 앱의 인터페이스와 컨텐츠를 처리하는 두 개 이상의 장면이 있을 수도 있다. 따라서 SceneDelegate는 UI 및 데이터를 화면에 표시하는 것을 담당한다.
+	- SceneDelegate는 UISceneSession의 scene생성, 파괴 및 상태 복원과 같은 scene 라이프 사이클 이벤트를 담당한다.
+	- SceneDelegate에서 볼 수 있는 기본 메서드들이다.
+	1. scene(_:willConnectTo:options:)
+	- UISceneSession 라이프 사이클에서 호출되는 첫 번째 메서드이다. 이 메서드는 새 UIWindow를 만들고 루트 뷰 컨트롤러를 설정하며 이 창을 표시할 key window로 만든다.
+	2. sceneDidDisconnect(_:)
+	- scene이 백그라운드 상태로 전환될 때, iOS는 자원을 해제하기 위해 scene을 완전히 삭제할 것을 결정할 수 있다. 이 말은 앱이 종료되거나 실행되지 않는 것을 말하는 건 아니라 scene만 세션에서 연결 해제되고 비활성화되는 것이다.
+	- iOS는 사용자가 특정 scene을 다시 포그라운드로 가져올 때 이 scene을 SceneSession에 다시 연결하도록 결정할 수 있다. 이 메서드는 더 이상 사용되지 않는 자원을 삭제하는데  사용할 수 있다.
+	3. sceneDidBecomeActive(_:)
+	- 이 메서드는 WillEnterForeground 메서드 바로 다음에 호출되며 여기에서 scene이 설정 및 표시되고 사용할 준비가 완료된다.
+	4. sceneWillResignActive(_:) 및 sceneDidEnterBackground (_ :)
+	- 이 메서드는 앱이 백그라운드 상태로 전환될 때 호출된다.
+	5. sceneWillEnterForeground(_:)
+	- 이 메서드는 앱이 처음 실행될 때나 백그라운드 상태에서 포그라운드 상태로 전환할 때처럼 scene이 시작되려고 할 때 호출된다.</mutableString>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="6Ow-E3-tzA" secondAttribute="bottom" constant="10" id="Ewf-yv-XKr"/>
+                                            <constraint firstItem="6Ow-E3-tzA" firstAttribute="leading" secondItem="YFA-Rj-gF5" secondAttribute="leading" constant="10" id="J3e-wJ-ubs"/>
+                                            <constraint firstAttribute="trailing" secondItem="6Ow-E3-tzA" secondAttribute="trailing" constant="10" id="T5w-sl-l6N"/>
+                                            <constraint firstItem="6Ow-E3-tzA" firstAttribute="top" secondItem="YFA-Rj-gF5" secondAttribute="top" constant="10" id="WpB-BC-bj1"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="YFA-Rj-gF5" firstAttribute="bottom" secondItem="Ozh-Ve-emP" secondAttribute="bottom" id="CUy-A0-NtK"/>
+                                    <constraint firstItem="YFA-Rj-gF5" firstAttribute="trailing" secondItem="Ozh-Ve-emP" secondAttribute="trailing" id="pPb-02-yP8"/>
+                                    <constraint firstItem="YFA-Rj-gF5" firstAttribute="width" secondItem="BCr-bN-jDl" secondAttribute="width" id="rws-m4-DvA"/>
+                                    <constraint firstItem="YFA-Rj-gF5" firstAttribute="leading" secondItem="Ozh-Ve-emP" secondAttribute="leading" id="ugp-Bu-a44"/>
+                                    <constraint firstItem="YFA-Rj-gF5" firstAttribute="top" secondItem="Ozh-Ve-emP" secondAttribute="top" id="xfd-3t-P2k"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="Ozh-Ve-emP"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="BCr-bN-jDl"/>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Y3A-Dv-BhE" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="OCI-eD-Tyv"/>
+                            <constraint firstItem="Y3A-Dv-BhE" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Uzl-jp-mUi"/>
+                            <constraint firstItem="Y3A-Dv-BhE" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="kPY-Zy-WfG"/>
+                            <constraint firstItem="Y3A-Dv-BhE" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="wYt-cg-gMV"/>
+                        </constraints>
+                    </view>
+                    <size key="freeformSize" width="414" height="1000"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-204.34782608695653" y="88.392857142857139"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="JiA-oc-I2A">
+            <objects>
+                <viewController id="Jnb-uq-Jmz" customClass="ViewController" customModule="ScrollViewTest" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="HJB-RS-t7C">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hvt-mU-nhs">
+                                <rect key="frame" x="20" y="44" width="374" height="818"/>
+                                <viewLayoutGuide key="contentLayoutGuide" id="ps6-HX-Aef"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="Rvd-2G-qzo"/>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="NJi-vA-9lv"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="hvt-mU-nhs" firstAttribute="bottom" secondItem="NJi-vA-9lv" secondAttribute="bottom" id="8q0-Ov-g20"/>
+                            <constraint firstItem="NJi-vA-9lv" firstAttribute="trailing" secondItem="hvt-mU-nhs" secondAttribute="trailing" constant="20" id="GPP-o5-xUD"/>
+                            <constraint firstItem="hvt-mU-nhs" firstAttribute="top" secondItem="NJi-vA-9lv" secondAttribute="top" id="bDW-Ke-1vD"/>
+                            <constraint firstItem="hvt-mU-nhs" firstAttribute="leading" secondItem="NJi-vA-9lv" secondAttribute="leading" constant="20" id="sHo-YC-ie3"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="scrollView" destination="hvt-mU-nhs" id="Pw7-XP-MHG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4pu-KV-ZVd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1104.3478260869565" y="53.571428571428569"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
