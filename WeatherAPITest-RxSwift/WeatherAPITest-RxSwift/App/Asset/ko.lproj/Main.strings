@@ -1,0 +1,48 @@
+
+/* Class = "UILabel"; text = "좋음"; ObjectID = "9aH-Ws-3fD"; */
+"9aH-Ws-3fD.text" = "좋음";
+
+/* Class = "UILabel"; text = "-"; ObjectID = "9lk-TH-O7W"; */
+"9lk-TH-O7W.text" = "-";
+
+/* Class = "UILabel"; text = "Wednesday"; ObjectID = "CYy-r3-G1B"; */
+"CYy-r3-G1B.text" = "Wednesday";
+
+/* Class = "UILabel"; text = "-"; ObjectID = "Dm6-A0-wue"; */
+"Dm6-A0-wue.text" = "-";
+
+/* Class = "UILabel"; text = "초미세먼지 "; ObjectID = "PCc-mZ-OPP"; */
+"PCc-mZ-OPP.text" = "초미세먼지 ";
+
+/* Class = "UILabel"; text = "좋음"; ObjectID = "Znm-ce-Hll"; */
+"Znm-ce-Hll.text" = "좋음";
+
+/* Class = "UILabel"; text = "Today"; ObjectID = "d5B-VN-wsE"; */
+"d5B-VN-wsE.text" = "Today";
+
+/* Class = "UILabel"; text = "6 / -3"; ObjectID = "eER-pH-Szw"; */
+"eER-pH-Szw.text" = "6 / -3";
+
+/* Class = "UILabel"; text = "나쁨"; ObjectID = "eID-Fg-TMX"; */
+"eID-Fg-TMX.text" = "나쁨";
+
+/* Class = "UILabel"; text = "점심"; ObjectID = "kyl-ha-Qj6"; */
+"kyl-ha-Qj6.text" = "점심";
+
+/* Class = "UILabel"; text = "-"; ObjectID = "mWH-Ie-fa2"; */
+"mWH-Ie-fa2.text" = "-";
+
+/* Class = "UILabel"; text = "-"; ObjectID = "oCn-SH-O5o"; */
+"oCn-SH-O5o.text" = "-";
+
+/* Class = "UILabel"; text = "미세먼지"; ObjectID = "rct-9H-kau"; */
+"rct-9H-kau.text" = "미세먼지";
+
+/* Class = "UILabel"; text = "아침"; ObjectID = "wZV-EW-hNo"; */
+"wZV-EW-hNo.text" = "아침";
+
+/* Class = "UILabel"; text = "미세먼지/초미세먼지"; ObjectID = "xJd-72-tFc"; */
+"xJd-72-tFc.text" = "미세먼지/초미세먼지";
+
+/* Class = "UILabel"; text = "저녁"; ObjectID = "yoe-VA-Vbg"; */
+"yoe-VA-Vbg.text" = "저녁";
