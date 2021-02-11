@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import RxSwift
 
 class PMAPIManger {
     
@@ -17,38 +18,59 @@ class PMAPIManger {
     
     static let shared = PMAPIManger()
     private init() {}
-        
-    func fetchCurrentData(lat: String, lon: String, completion: @escaping (_ result: PMModel) -> Void) {
-        let urlString = "\(createUrl(URLType.current))&lat=\(lat)&lon=\(lon)"
-        requestCurrentData(with: urlString, completion: completion)
-    }
-    
-    func fetchFcstData(lat: String, lon: String, completion: @escaping (_ result: [[PMModel]]) -> Void) {
-        let urlString = "\(createUrl(URLType.forecast))&lat=\(lat)&lon=\(lon)"
-        requestFcstData(with: urlString, completion: completion)
+     
+    func fetchCurrentData(lat: String, lon: String) -> Observable<PMModel> {
+        return Observable.create() { emitter in
+            let urlString = "\(self.createUrl(URLType.current))&lat=\(lat)&lon=\(lon)"
+            self.requestCurrentData(with: urlString) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                case .failure(let err):
+                    emitter.onError(err)
+                }
+            }
+            return Disposables.create()
+        }
     }
 
-    private func requestCurrentData(with url: String, completion: @escaping (_ result: PMModel) -> Void) {
+    func fetchFcstData(lat: String, lon: String) -> Observable<[[PMModel]]> {
+        return Observable.create() { emitter in
+            let urlString = "\(self.createUrl(URLType.current))&lat=\(lat)&lon=\(lon)"
+            self.requestFcstData(with: urlString) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                case .failure(let err):
+                    emitter.onError(err)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+
+    private func requestCurrentData(with url: String, completion: @escaping (Result<PMModel, Error>) -> Void) {
         AF.request(url).responseJSON { response in
             switch response.result {
             case.success(let data):
                 guard let pmModel = self.parseCurrentJSON(data) else { return }
-                
-                completion(pmModel)
+                completion(.success(pmModel))
             case .failure(let error):
                 print(error.localizedDescription)
+                completion(.failure(error))
             }
         }
     }
     
-    func requestFcstData(with url: String, completion: @escaping (_ result: [[PMModel]]) -> Void) {
+    func requestFcstData(with url: String, completion: @escaping (Result<[[PMModel]], Error>) -> Void) {
         AF.request(url).responseJSON { response in
             switch response.result {
             case.success(let data):
                 guard let pmModel = self.parseFcstJSON(data) else { return }
-                completion(pmModel)
+                completion(.success(pmModel))
             case .failure(let error):
                 print(error.localizedDescription)
+                completion(.failure(error))
             }
         }
     }

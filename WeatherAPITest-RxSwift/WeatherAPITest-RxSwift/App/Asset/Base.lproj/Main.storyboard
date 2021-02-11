@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Jb4-bZ-kcK">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
@@ -222,6 +222,7 @@
                             <constraint firstItem="RTX-q9-RLe" firstAttribute="top" secondItem="KqD-JK-39v" secondAttribute="bottom" constant="38" id="5Wm-yV-JLG"/>
                             <constraint firstItem="d5B-VN-wsE" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="5cY-oc-80P"/>
                             <constraint firstItem="RTX-q9-RLe" firstAttribute="top" secondItem="d5B-VN-wsE" secondAttribute="bottom" constant="42" id="86I-Y8-mab"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="EyK-ls-fXp" secondAttribute="trailing" constant="10" id="Klr-JO-D3G"/>
                             <constraint firstItem="KqD-JK-39v" firstAttribute="leading" secondItem="MJ4-fX-pb6" secondAttribute="trailing" constant="30" id="Sua-gO-cT3"/>
                             <constraint firstItem="nOS-dS-GQk" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="TZA-zH-P5X"/>
                             <constraint firstItem="MJ4-fX-pb6" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="31" id="UV3-dz-PQV"/>

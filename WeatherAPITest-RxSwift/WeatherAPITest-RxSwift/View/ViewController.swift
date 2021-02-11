@@ -8,40 +8,11 @@
 import UIKit
 import RxCocoa
 import RxSwift
-import RxCoreLocation
-import CoreLocation
 
 class ViewController: UIViewController {
     
-    var disposeBag = DisposeBag()
-    
-    
-    var latitude = ""
-    var longitude = ""
-    
-    var currentWeather: WeatherCurrent? {
-        didSet {
-            self.currentWeatherImageView.image = UIImage(systemName: currentWeather?.conditionName ?? "-")
-            self.currentWeatherLabel.text = currentWeather?.temperatureString
-        }
-    }
-    
-    var currentPM: PMModel? {
-        didSet {
-            self.pm10Label.text = currentPM?.pm10Status
-            self.pm25Label.text = currentPM?.pm25Status
-        }
-    }
-    
-    var weekWeather: [WeatherFcst?] = [] 
-    
-    var weekPM: [[PMModel?]] = [] {
-        didSet {
-            tableView.reloadData()
-            activityIndicatorView.stopAnimating()
-            activityIndicatorView.isHidden = true
-        }
-    }
+    let viewModel = CurrentViewModel()
+    var bag = DisposeBag()
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var currentWeatherImageView: UIImageView!
@@ -53,7 +24,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setBinding()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -61,6 +32,41 @@ class ViewController: UIViewController {
         
         currentWeatherLabel.adjustsFontSizeToFitWidth = true
         locationLabel.adjustsFontSizeToFitWidth = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        bag = DisposeBag()
+    }
+    
+    func setBinding() {
+        let locationManager = LocationManager.shared
+        let input = CurrentViewModel.Input(location: locationManager.location, placemark: locationManager.placemark)
+        let output = viewModel.bind(input: input)
+        
+        output.locationName
+            .bind(to: locationLabel.rx.text)
+            .disposed(by: bag)
+        
+        output.conditionName
+            .map {
+                UIImage(systemName: $0)
+            }
+            .observe(on: MainScheduler.instance)
+            .bind(to: currentWeatherImageView.rx.image)
+            .disposed(by: bag)
+        
+        output.temperature
+            .bind(to: currentWeatherLabel.rx.text)
+            .disposed(by: bag)
+        
+        output.pm10Status
+            .bind(to: pm10Label.rx.text)
+            .disposed(by: bag)
+        
+        output.pm25Status
+            .bind(to: pm25Label.rx.text)
+            .disposed(by: bag)
     }
 }
 
