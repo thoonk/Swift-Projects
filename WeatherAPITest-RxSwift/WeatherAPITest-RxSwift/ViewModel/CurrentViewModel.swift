@@ -11,8 +11,8 @@ import CoreLocation
 
 class CurrentViewModel: ViewModelType {
     
-    private var weatherSubject = PublishSubject<WeatherCurrent?>()
-    private var pmSubject = PublishSubject<PMModel?>()
+    private var weatherSubject = PublishSubject<WeatherCurrent>()
+    private var pmSubject = PublishSubject<PMModel>()
     
     var bag: DisposeBag = DisposeBag()
     
@@ -63,22 +63,22 @@ class CurrentViewModel: ViewModelType {
         
         let conditionName = weatherSubject
             .map { data in
-                data?.conditionName ?? "-"
+                data.conditionName
             }
         
         let temperature = weatherSubject
             .map { data in
-                data?.temperatureString ?? "-"
+                data.temperatureString
             }
         
         let pm10Status = pmSubject
             .map { data in
-                data?.pm10Status ?? "-"
+                data.pm10Status
             }
         
         let pm25Status = pmSubject
             .map { data in
-                data?.pm25Status ?? "-"
+                data.pm25Status
             }
         
         return Output(locationName: locationName,

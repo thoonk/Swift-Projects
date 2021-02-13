@@ -18,7 +18,8 @@ class PMAPIManger {
     
     static let shared = PMAPIManger()
     private init() {}
-     
+    
+    // MARK: - Request Current Data
     func fetchCurrentData(lat: String, lon: String) -> Observable<PMModel> {
         return Observable.create() { emitter in
             let urlString = "\(self.createUrl(URLType.current))&lat=\(lat)&lon=\(lon)"
@@ -33,40 +34,12 @@ class PMAPIManger {
             return Disposables.create()
         }
     }
-
-    func fetchFcstData(lat: String, lon: String) -> Observable<[[PMModel]]> {
-        return Observable.create() { emitter in
-            let urlString = "\(self.createUrl(URLType.current))&lat=\(lat)&lon=\(lon)"
-            self.requestFcstData(with: urlString) { result in
-                switch result {
-                case .success(let data):
-                    emitter.onNext(data)
-                case .failure(let err):
-                    emitter.onError(err)
-                }
-            }
-            return Disposables.create()
-        }
-    }
-
+    
     private func requestCurrentData(with url: String, completion: @escaping (Result<PMModel, Error>) -> Void) {
         AF.request(url).responseJSON { response in
             switch response.result {
             case.success(let data):
                 guard let pmModel = self.parseCurrentJSON(data) else { return }
-                completion(.success(pmModel))
-            case .failure(let error):
-                print(error.localizedDescription)
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    func requestFcstData(with url: String, completion: @escaping (Result<[[PMModel]], Error>) -> Void) {
-        AF.request(url).responseJSON { response in
-            switch response.result {
-            case.success(let data):
-                guard let pmModel = self.parseFcstJSON(data) else { return }
                 completion(.success(pmModel))
             case .failure(let error):
                 print(error.localizedDescription)
@@ -91,19 +64,49 @@ class PMAPIManger {
         }
     }
     
+    // MARK: - Request Forecast Data
+    func fetchFcstData(lat: String, lon: String) -> Observable<[[PMModel]]> {
+        return Observable.create() { emitter in
+            let urlString = "\(self.createUrl(URLType.forecast))&lat=\(lat)&lon=\(lon)"
+            self.requestFcstData(with: urlString) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                case .failure(let err):
+                    emitter.onError(err)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+
+    private func requestFcstData(with url: String, completion: @escaping (Result<[[PMModel]], Error>) -> Void) {
+        AF.request(url).responseJSON { response in
+            switch response.result {
+            case.success(let data):
+                guard let pmModel = self.parseFcstJSON(data) else { return }
+                completion(.success(pmModel))
+            case .failure(let error):
+                print(error.localizedDescription)
+                completion(.failure(error))
+            }
+        }
+    }
+    
     private func parseFcstJSON(_ data: Any) -> [[PMModel]]? {
         do {
             let pmData = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
             let result = try JSONDecoder().decode(PMData.self, from: pmData)
             var pmDay: [PMModel] = []
             var pms: [[PMModel]] = []
+            
             for i in 0..<result.list.count {
                 
                 let dt = Date(timeIntervalSince1970: result.list[i].dt).toLocalized(with: "KST", by: "normal")
                 let time = dt.split(separator: " ")
                 let pm10 = result.list[i].components.pm10
                 let pm25 = result.list[i].components.pm25
-//                print(dt)
+
                 if pmDay.count == 3 {
                     pms.append(pmDay)
                     pmDay = []
@@ -125,7 +128,6 @@ class PMAPIManger {
                 }
                 pms.append(pmDay)
             }
-            print(pms)
             return pms
         } catch {
             print("PM Fcst JSON Error: \(error.localizedDescription)")

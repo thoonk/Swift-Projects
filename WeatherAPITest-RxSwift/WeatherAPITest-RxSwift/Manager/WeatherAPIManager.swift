@@ -19,25 +19,11 @@ class WeatherAPIManager {
     static let shared = WeatherAPIManager()
     private init() {}
 
+    // MARK: - Request Current Data
     func fetchCurrentData(lat: String, lon: String) -> Observable<WeatherCurrent> {
         return Observable.create() { emitter in
             let urlString = "\(self.createUrl(URLType.current))&lat=\(lat)&lon=\(lon)"
             self.requestCurrentData(with: urlString) { result in
-                switch result {
-                case .success(let data):
-                    emitter.onNext(data)
-                case .failure(let err):
-                    emitter.onError(err)
-                }
-            }
-            return Disposables.create()
-        }
-    }
-    
-    func fetchFcstData(lat: String, lon: String) -> Observable<[WeatherFcst]> {
-        return Observable.create() { emitter in
-            let urlString = "\(self.createUrl(URLType.current))&lat=\(lat)&lon=\(lon)"
-            self.requestFcstData(with: urlString) { result in
                 switch result {
                 case .success(let data):
                     emitter.onNext(data)
@@ -62,19 +48,6 @@ class WeatherAPIManager {
         }
     }
     
-    private func requestFcstData(with url: String, completion: @escaping (Result<[WeatherFcst], Error>) -> Void) {
-        AF.request(url).responseJSON { response in
-            switch response.result {
-            case.success(let data):
-                guard let weatherData = self.parseFcstJSON(data) else { return }
-                completion(.success(weatherData))
-            case .failure(let error):
-                print(error.localizedDescription)
-                completion(.failure(error))
-            }
-        }
-    }
-    
     private func parseCurrentJSON(_ data: Any) -> WeatherCurrent? {
         do {
             let weatherData = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
@@ -88,6 +61,35 @@ class WeatherAPIManager {
         }
     }
     
+    // MARK: - Request Forecast Data
+    func fetchFcstData(lat: String, lon: String) -> Observable<[WeatherFcst]> {
+        return Observable.create() { emitter in
+            let urlString = "\(self.createUrl(URLType.forecast))&lat=\(lat)&lon=\(lon)"
+            self.requestFcstData(with: urlString) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                case .failure(let err):
+                    emitter.onError(err)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    private func requestFcstData(with url: String, completion: @escaping (Result<[WeatherFcst], Error>) -> Void) {
+        AF.request(url).responseJSON { response in
+            switch response.result {
+            case.success(let data):
+                guard let weatherData = self.parseFcstJSON(data) else { return }
+                completion(.success(weatherData))
+            case .failure(let error):
+                print(error.localizedDescription)
+                completion(.failure(error))
+            }
+        }
+    }
+  
     private func parseFcstJSON(_ data: Any) -> [WeatherFcst]? {
         do {
             let weatherData = try JSONSerialization.data(withJSONObject: data, options: .prettyPrinted)
