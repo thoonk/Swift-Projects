@@ -75,30 +75,23 @@ class ViewController: UIViewController {
         let locationManager = LocationManager.shared
         let input = FcstViewModel.Input(location: locationManager.location)
         let output = fcstViewModel.bind(input: input)
-                
-        // 날씨랑 미세먼지 merge해서 테이블 뷰에 뿌려야 됨
         
-        output.weekWeather
-            .observe(on: MainScheduler.instance)
+        output.fcstData
             .bind(to: tableView.rx.items(cellIdentifier: C.Cell.identifier, cellType: WeatherTableViewCell.self)) { index, item, cell in
-
-                cell.weekLabel.text = item.dateTime
-                cell.tempLabel.text = "\(item.maxTempString) / \(item.minTempString)"
-                cell.weatherImageView.image = UIImage(systemName: item.conditionName)
+                
+                cell.weekLabel.text = item.weekWeather?.dateTime
+                cell.tempLabel.text = "\(item.weekWeather?.maxTempString ?? "-") / \(item.weekWeather?.minTempString ?? "-")"
+                cell.weatherImageView.image = UIImage(systemName: item.weekWeather?.conditionName ?? "sum.max")
+                
+                let morningPM: PMModel = item.weekPM![0]
+                let afterrnoonPM: PMModel = item.weekPM![1]
+                let eveningPM: PMModel = item.weekPM![2]
+                
+                cell.morningPMLabel.text = "\(morningPM.pm10Status) / \(morningPM.pm25Status)"
+                cell.afternoonPMLabel.text = "\(afterrnoonPM.pm10Status) / \(afterrnoonPM.pm25Status)"
+                cell.eveningPMLabel.text = "\(eveningPM.pm10Status) / \(eveningPM.pm25Status)"
+                
             }.disposed(by: bag)
-
-//        output.weekPM
-//            .observe(on: MainScheduler.instance)
-//            .bind(to: tableView.rx.items(cellIdentifier: C.Cell.identifier, cellType: WeatherTableViewCell.self)) { index, item, cell in
-//
-//                let morningPM: PMModel = item[0]
-//                let afterrnoonPM: PMModel = item[1]
-//                let eveningPM: PMModel = item[2]
-//
-//                cell.morningPMLabel.text = "\(morningPM.pm10Status) / \(morningPM.pm25Status)"
-//                cell.afternoonPMLabel.text = "\(afterrnoonPM.pm10Status) / \(afterrnoonPM.pm25Status)"
-//                cell.eveningPMLabel.text = "\(eveningPM.pm10Status) / \(eveningPM.pm25Status)"
-//            }.disposed(by: bag)
     }
 }
 

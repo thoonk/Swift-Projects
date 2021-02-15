@@ -11,8 +11,7 @@ import CoreLocation
 
 class FcstViewModel: ViewModelType {
     
-    private var weatherSubject = PublishSubject<[WeatherFcst]>()
-    private var pmSubject = PublishSubject<[[PMModel]]>()
+    private var fcstSubject = PublishSubject<[FcstModel]>()
     
     var bag: DisposeBag = DisposeBag()
     
@@ -21,8 +20,7 @@ class FcstViewModel: ViewModelType {
     }
     
     struct Output {
-        let weekWeather: Observable<[WeatherFcst]>
-        let weekPM: Observable<[[PMModel]]>
+        let fcstData: Observable<[FcstModel]>
         let errorMessage: Observable<String>
     }
     
@@ -32,29 +30,17 @@ class FcstViewModel: ViewModelType {
         
         input.location
             .take(1)
-            .flatMapLatest { (location) -> Observable<[WeatherFcst]> in
-                WeatherAPIManager.shared.fetchFcstData(lat: "\(location.coordinate.latitude)", lon: "\(location.coordinate.longitude)")
+            .flatMapLatest { (location) -> Observable<[FcstModel]> in
+                return FcstAPIManager.shared.fetchFcstData(lat: "\(location.coordinate.latitude)", lon: "\(location.coordinate.longitude)")
             }.subscribe(onNext: { [weak self] data in
-                self?.weatherSubject.onNext(data)
+                self?.fcstSubject.onNext(data)
             }, onError: { err in
                 error.onNext(err.localizedDescription)
             }).disposed(by: bag)
         
-        input.location
-            .take(1)
-            .flatMapLatest { (location) -> Observable<[[PMModel]]> in
-                PMAPIManger.shared.fetchFcstData(lat: "\(location.coordinate.latitude)", lon: "\(location.coordinate.longitude)")
-            }.subscribe(onNext: { [weak self] data in
-                self?.pmSubject.onNext(data)
-            }, onError: { err in
-                error.onNext(err.localizedDescription)
-            }).disposed(by: bag)
+        let fcstData = fcstSubject
 
-        let weekWeather = weatherSubject
-        let weekPM = pmSubject
-        
-        return Output(weekWeather: weekWeather,
-                      weekPM: weekPM,
+        return Output(fcstData: fcstData,
                       errorMessage: error)
     }
 }

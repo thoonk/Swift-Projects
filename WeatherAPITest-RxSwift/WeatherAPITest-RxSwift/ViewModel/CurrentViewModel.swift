@@ -39,7 +39,7 @@ class CurrentViewModel: ViewModelType {
         input.location
             .take(1)
             .flatMapLatest { (location) -> Observable<WeatherCurrent> in
-                WeatherAPIManager.shared.fetchCurrentData(lat: "\(location.coordinate.latitude)", lon: "\(location.coordinate.longitude)")
+                CurrentAPIManger.shared.fetchWeatherData(lat: "\(location.coordinate.latitude)", lon: "\(location.coordinate.longitude)")
             }.subscribe(onNext: { [weak self] data in
                 self?.weatherSubject.onNext(data)
             }, onError: { err in
@@ -49,7 +49,7 @@ class CurrentViewModel: ViewModelType {
         input.location
             .take(1)
             .flatMapLatest { (location) -> Observable<PMModel> in
-                PMAPIManger.shared.fetchCurrentData(lat: "\(location.coordinate.latitude)", lon: "\(location.coordinate.longitude)")
+                CurrentAPIManger.shared.fetchPMData(lat: "\(location.coordinate.latitude)", lon: "\(location.coordinate.longitude)")
             }.subscribe(onNext: { [weak self] data in
                 self?.pmSubject.onNext(data)
             }, onError: { err in
