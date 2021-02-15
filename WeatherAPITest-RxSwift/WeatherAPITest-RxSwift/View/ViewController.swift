@@ -76,6 +76,11 @@ class ViewController: UIViewController {
         let input = FcstViewModel.Input(location: locationManager.location)
         let output = fcstViewModel.bind(input: input)
         
+        output.isLoading
+            .map { !$0 }
+            .bind(to: activityIndicatorView.rx.isHidden)
+            .disposed(by: bag)
+        
         output.fcstData
             .bind(to: tableView.rx.items(cellIdentifier: C.Cell.identifier, cellType: WeatherTableViewCell.self)) { index, item, cell in
                 

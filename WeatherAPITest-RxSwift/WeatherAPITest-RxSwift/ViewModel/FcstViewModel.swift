@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import CoreLocation
+import RxCocoa
 
 class FcstViewModel: ViewModelType {
     
@@ -21,18 +22,22 @@ class FcstViewModel: ViewModelType {
     
     struct Output {
         let fcstData: Observable<[FcstModel]>
+        let isLoading: BehaviorSubject<Bool>
         let errorMessage: Observable<String>
     }
     
     func bind(input: Input) -> Output {
-        
+        let isLoading = BehaviorSubject<Bool>(value: false)
         let error = PublishSubject<String>()
         
         input.location
             .take(1)
+            .do(onNext: { _ in isLoading.onNext(true) })
             .flatMapLatest { (location) -> Observable<[FcstModel]> in
                 return FcstAPIManager.shared.fetchFcstData(lat: "\(location.coordinate.latitude)", lon: "\(location.coordinate.longitude)")
-            }.subscribe(onNext: { [weak self] data in
+            }
+            .do(onNext: { _ in isLoading.onNext(false) })
+            .subscribe(onNext: { [weak self] data in
                 self?.fcstSubject.onNext(data)
             }, onError: { err in
                 error.onNext(err.localizedDescription)
@@ -41,6 +46,7 @@ class FcstViewModel: ViewModelType {
         let fcstData = fcstSubject
 
         return Output(fcstData: fcstData,
+                      isLoading: isLoading,
                       errorMessage: error)
     }
 }
