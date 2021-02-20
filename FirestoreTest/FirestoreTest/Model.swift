@@ -9,15 +9,14 @@ import Foundation
 
 struct User: Codable {
     var name: String
-    var puppies: [Puppy]?
 }
 
 struct Puppy: Codable {
+    var id: String
     var name: String
     var age: String
     var weight: Double
     var species: String
-    var record: [Record]?
 }
 
 struct Record: Codable {

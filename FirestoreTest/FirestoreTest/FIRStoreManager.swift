@@ -20,7 +20,7 @@ final class FIRStoreManager {
     private init() { }
     
     /// 사용자 이름 읽기
-    func fetchUserInfo<T: Decodable>(from ref: FIRStoreRef, returning userObject: T.Type, completion: @escaping (T) -> Void) {
+    func fetchUserInfo<T: Decodable>(from ref: FIRStoreRef, returning encodableObject: T.Type, completion: @escaping (T) -> Void) {
 
         collection = db.collection(ref.path)
         collection?.getDocuments(completion: { (querySnapshot, error) in
@@ -32,7 +32,7 @@ final class FIRStoreManager {
                 do {
                     for doc in querySnapshot!.documents {
                         if doc.documentID == ref.uid {
-                            let object: T = try doc.decode(as: userObject.self)
+                            let object: T = try doc.decode(as: encodableObject.self)
                             completion(object)
                         }
                     }
@@ -44,29 +44,25 @@ final class FIRStoreManager {
     }
 
     /// 사용자 등록 메서드
-    func registerUserInfo<T: Encodable>(for userObject: T, with ref: FIRStoreRef) {
-        do {
-            let json = try userObject.toJson()
-            document = db.document(ref.path)
-            if document != nil {
-                document!.setData(json) { error in
-                    if let error = error {
-                        print("Error writing docs: \(error)")
-                    } else {
-                        print("Writing Succeded")
-                    }
+    func registerUserInfo(data: [String:Any], with ref: FIRStoreRef) {
+        
+        document = db.document(ref.path)
+        if document != nil {
+            document!.setData(data) { error in
+                if let error = error {
+                    print("Error writing docs: \(error)")
+                } else {
+                    print("Writing Succeded")
                 }
             }
-        } catch {
-            print(error.localizedDescription)
         }
     }
 
     /// 사용자 전체 정보 수정
-    func updateUserInfo<T: Encodable>(with ref: FIRStoreRef, for userObject: T) {
+    func updateUserInfo<T: Encodable>(with ref: FIRStoreRef, for encodableObject: T) {
         document = db.document(ref.path)
         do {
-            let json = try userObject.toJson()
+            let json = try encodableObject.toJson()
             document?.setData(json)
         } catch {
             print(error.localizedDescription)
@@ -95,20 +91,26 @@ final class FIRStoreManager {
         }
     }
     /// 강쥐 정보 등록
-    func registerPuppyInfo<T: Encodable>(for puppyObject: T, with ref: FIRStoreRef) {
+    func registerPuppyInfo<T: Encodable>(for encodableObject: T, with ref: FIRStoreRef) {
         document = db.document(ref.path)
         do {
-            let json = try puppyObject.toJson()
+            let json = try encodableObject.toJson()
             document = db.document(ref.path)
             if document != nil {
-                document!.setData(json)
+                document!.setData(json) { error in
+                    if let error = error {
+                        print("Error writing docs: \(error)")
+                    } else {
+                        print("Writing Succeded")
+                    }
+                }
             }
         } catch {
             print(error.localizedDescription)
         }
     }
     /// 모든 강쥐 정보 읽기
-    func fetchPuppyInfo<T: Decodable>(from ref: FIRStoreRef, returning userObject: T.Type, completion: @escaping ([T]) -> Void) {
+    func fetchAllPuppyInfo<T: Decodable>(from ref: FIRStoreRef, returning encodableObject: T.Type, completion: @escaping ([T]) -> Void) {
         collection = db.collection(ref.path)
         collection?.getDocuments(completion: { (querySnapshot, error) in
 
@@ -118,7 +120,7 @@ final class FIRStoreManager {
                 do {
                     var objects = [T]()
                     for doc in querySnapshot!.documents {
-                        let object: T = try doc.decode(as: userObject.self)
+                        let object: T = try doc.decode(as: encodableObject.self)
                         objects.append(object)
                     }
                     completion(objects)
@@ -127,6 +129,25 @@ final class FIRStoreManager {
                 }
             }
         })
+    }
+    
+    /// 하나의 강쥐 정보 읽기
+    func fetchOnePuppyInfo<T: Decodable>(id: String, from ref: FIRStoreRef, returning encodableObject: T.Type, completion: @escaping (T) -> Void) {
+        
+        document = db.document(ref.path)
+        document?.getDocument { (snapshot, error) in
+            
+            if error != nil {
+                print("Puppy Docs does not exist: \(error!.localizedDescription)")
+            } else {
+                do {
+                    let object: T = try snapshot!.decode(as: encodableObject.self)
+                    completion(object)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
     
     /// 강쥐 정보 수정
@@ -148,6 +169,54 @@ final class FIRStoreManager {
                 print("Error writing docs: \(error)")
             } else {
                 print("Deleting Succeded")
+            }
+        }
+    }
+    
+    /// 산책 기록 등록
+    func addRecordInfo(data: [String: Any], with ref: FIRStoreRef) {
+        document = db.document(ref.path)
+        if document != nil {
+            document!.setData(data) { error in
+                if let error = error {
+                    print("Error writing docs: \(error)")
+                } else {
+                    print("Writing Succeded")
+                }
+            }
+        }
+    }
+    /// 산책 기록 읽기
+//    func fetchRecordInfo<T: Decodable>(from ref: FIRStoreRef, returning encodableObject: T.Type, completion: @escaping ([T]) -> Void) {
+//        collection = db.collection(ref.path)
+//        collection?.getDocuments { (querySnapshot, error) in
+//            if error != nil {
+//                print("Rcord Docs does not exist: \(error!.localizedDescription)")
+//            } else {
+//                do {
+//                    var objects = [T]()
+//                    for doc in querySnapshot!.documents {
+//                        let object: T = try doc.decode(as: encodableObject.self)
+//                        objects.append(object)
+//                    }
+//                    completion(objects)
+//                } catch {
+//                    print(error.localizedDescription)
+//                }
+//            }
+//        }
+//    }
+    
+    /// 산책 기록 삭제
+    func deleteRcordInfo(with ref: FIRStoreRef) {
+        document = db.document(ref.path)
+        if document != nil {
+            document!.delete() { error in
+                if let error = error {
+                    print("Error writing docs: \(error)")
+                } else {
+                    print("Deleting Succeded")
+                }
             }
         }
     }

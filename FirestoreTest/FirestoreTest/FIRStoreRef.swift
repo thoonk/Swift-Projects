@@ -11,9 +11,9 @@ enum FIRStoreRef {
     case users
     case currentUser
     case puppies
-    case puppy(id: String)
-    case record(id: String)
-    
+    case puppy(puppyId: String)
+    case records(puppyId: String)
+    case record(puppyId: String, recordId: String)
 }
 
 extension FIRStoreRef {
@@ -21,7 +21,7 @@ extension FIRStoreRef {
 //        guard let currentUser = Auth.auth().currentUser else {
 //            return "Unknown User"
 //        }
-        let currentUser = "user1"
+        let currentUser = "user2"
         return currentUser
     }
 
@@ -35,8 +35,10 @@ extension FIRStoreRef {
             return "users/\(uid)/puppies"
         case let .puppy(id):
             return "users/\(uid)/puppies/\(id)"
-        case let .record(id):
-            return "users/\(uid)/puppies/\(id)/record"
+        case let .records(puppyId):
+            return "users/\(uid)/puppies/\(puppyId)/record"
+        case let .record(puppyId, recordId):
+            return "users/\(uid)/puppies/\(puppyId)/record/\(recordId)"
         }
     }
 }
