@@ -7,11 +7,114 @@
 
 import UIKit
 import FirebaseFirestore
+import FirebaseStorage
+import Photos
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    @IBOutlet var imageView: UIImageView!
+    @IBOutlet var uploadBtn: UIButton!
+
+    @IBAction func uploadBtnTapped(_ sender: UIButton) {
         
+        let picker = UIImagePickerController()
+        picker.sourceType = .photoLibrary
+        picker.delegate = self
+        picker.allowsEditing = true
+        present(picker, animated: true)
+    }
+    
+    private let storage = Storage.storage().reference()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        checkPermissions()
+//        guard let urlString = UserDefaults.standard.value(forKey: "url") as? String,
+//              let url = URL(string: urlString) else {
+//            return
+//        }
+        
+//        let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
+//            guard let data = data, error == nil else {
+//                return
+//            }
+//            DispatchQueue.main.async {
+//                let image = UIImage(data: data)
+//                self.imageView.image = image
+//            }
+//        }
+//
+//        task.resume()
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
+            return
+        }
+        guard let imageData = image.pngData() else {
+            return
+        }
+        
+        let ref = storage.child("images/file.png")
+        
+        ref.putData(imageData, metadata: nil) { (_, error) in
+            guard error == nil else {
+                print("Failed to upload")
+                return
+            }
+            
+            ref.downloadURL { (url, error) in
+                guard let url = url, error == nil else {
+                    return
+                }
+                
+                let urlString = url.absoluteString
+                
+                self.imageView.image = image
+                
+                print("Download URL: \(urlString)")
+                UserDefaults.standard.set(urlString, forKey: "url")
+            }
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func checkPermissions() {
+        let photoAuthorizedStatus = PHPhotoLibrary.authorizationStatus()
+        switch photoAuthorizedStatus {
+        case .authorized:
+            uploadBtn.isEnabled = true
+        case .denied:
+            uploadBtn.isEnabled = false
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization { (status) in
+                switch status {
+                case .authorized:
+                    print("사진 접근 허가")
+                case .denied:
+                    DispatchQueue.main.async {
+                        self.uploadBtn.isEnabled = false
+                    }
+                    print("사진 접근 불허")
+                default:
+                    break
+                }
+            }
+        case .limited:
+            print("사진 접근 제한")
+        case .restricted:
+            print("사진 접근 제한")
+        @unknown default:
+            fatalError("Unknown Error")
+        }
+    }
+    
+    func setTest() {
         
 //        registerUserInfo(with: UUID().uuidString)
 //        registerPuppyInfo(with: "test1")
