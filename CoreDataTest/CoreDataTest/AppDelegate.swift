@@ -90,8 +90,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     // MARK: - Core Data Saving support
-
     func saveContext () {
+        // Git의 staging area와 비슷한 개념
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {

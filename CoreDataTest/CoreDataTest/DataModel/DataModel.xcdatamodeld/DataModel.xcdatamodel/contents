@@ -4,12 +4,13 @@
         <attribute name="name" attributeType="String" defaultValueString="thoonk"/>
         <attribute name="number" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
-        <attribute name="done" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="title" attributeType="String"/>
+    <entity name="Item" representedClassName=".Item" syncable="YES" codeGenerationType="class">
+        <attribute name="done" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="title" attributeType="String" defaultValueString="default"/>
     </entity>
     <configuration name="Cloud" usedWithCloudKit="YES">
         <memberEntity name="Contact"/>
+        <memberEntity name="Item"/>
     </configuration>
     <elements>
         <element name="Contact" positionX="-45" positionY="0" width="128" height="59"/>
