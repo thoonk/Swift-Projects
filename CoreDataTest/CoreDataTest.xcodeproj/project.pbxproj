@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		08C8E01026A45325007DF085 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 08C8E00E26A45325007DF085 /* DataModel.xcdatamodeld */; };
+		08E7BE6826B64EBC005801C2 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E7BE6726B64EBC005801C2 /* CategoryViewController.swift */; };
 		08F444E526A3E4FA00205196 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F444E426A3E4FA00205196 /* AppDelegate.swift */; };
 		08F444E726A3E4FA00205196 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F444E626A3E4FA00205196 /* SceneDelegate.swift */; };
 		08F444E926A3E4FA00205196 /* ItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F444E826A3E4FA00205196 /* ItemViewController.swift */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		08C8E00F26A45325007DF085 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		08E7BE6726B64EBC005801C2 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		08F444E126A3E4FA00205196 /* CoreDataTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDataTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08F444E426A3E4FA00205196 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		08F444E626A3E4FA00205196 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -51,6 +53,15 @@
 			path = DataModel;
 			sourceTree = "<group>";
 		};
+		08E7BE6926B64EC6005801C2 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				08F444E826A3E4FA00205196 /* ItemViewController.swift */,
+				08E7BE6726B64EBC005801C2 /* CategoryViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		08F444D826A3E4FA00205196 = {
 			isa = PBXGroup;
 			children = (
@@ -74,7 +85,7 @@
 				08F444FD26A4094900205196 /* CoreDataTest.entitlements */,
 				08F444E426A3E4FA00205196 /* AppDelegate.swift */,
 				08F444E626A3E4FA00205196 /* SceneDelegate.swift */,
-				08F444E826A3E4FA00205196 /* ItemViewController.swift */,
+				08E7BE6926B64EC6005801C2 /* Controllers */,
 				08F444EA26A3E4FA00205196 /* Main.storyboard */,
 				08F444F026A3E4FB00205196 /* Assets.xcassets */,
 				08F444F226A3E4FB00205196 /* LaunchScreen.storyboard */,
@@ -162,6 +173,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08E7BE6826B64EBC005801C2 /* CategoryViewController.swift in Sources */,
 				08F444E926A3E4FA00205196 /* ItemViewController.swift in Sources */,
 				08C8E01026A45325007DF085 /* DataModel.xcdatamodeld in Sources */,
 				08F444E526A3E4FA00205196 /* AppDelegate.swift in Sources */,
