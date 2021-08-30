@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="CustomPickerView" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cmc-63-POD">
+                                <rect key="frame" x="20" y="244" width="374" height="100"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="35" translatesAutoresizingMaskIntoConstraints="NO" id="kzr-5z-R6n">
+                                        <rect key="frame" x="90.5" y="27" width="193" height="46"/>
+                                        <subviews>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="00" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZDj-2m-JTV">
+                                                <rect key="frame" x="0.0" y="0.0" width="41" height="46"/>
+                                                <color key="textColor" systemColor="labelColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="00" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DZ6-2C-CFm">
+                                                <rect key="frame" x="76" y="0.0" width="41" height="46"/>
+                                                <color key="textColor" systemColor="labelColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="00" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5dE-97-YzN">
+                                                <rect key="frame" x="152" y="0.0" width="41" height="46"/>
+                                                <color key="textColor" systemColor="labelColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                <constraints>
+                                    <constraint firstItem="kzr-5z-R6n" firstAttribute="centerY" secondItem="Cmc-63-POD" secondAttribute="centerY" id="E63-Mc-FRt"/>
+                                    <constraint firstAttribute="height" constant="100" id="Vwa-IN-Xei"/>
+                                    <constraint firstItem="kzr-5z-R6n" firstAttribute="centerX" secondItem="Cmc-63-POD" secondAttribute="centerX" id="vri-z6-KwO"/>
+                                </constraints>
+                            </view>
+                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="4aT-iz-TOX">
+                                <rect key="frame" x="0.0" y="645" width="414" height="251"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vuT-en-bZQ">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="35"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TXL-id-4OB">
+                                                <rect key="frame" x="364" y="2.5" width="30" height="30"/>
+                                                <state key="normal" title="완료"/>
+                                                <connections>
+                                                    <action selector="doneBtnTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rMn-RT-KNb"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="35" id="OdM-0B-goM"/>
+                                            <constraint firstAttribute="trailing" secondItem="TXL-id-4OB" secondAttribute="trailing" constant="20" id="RHm-IK-Pkq"/>
+                                            <constraint firstItem="TXL-id-4OB" firstAttribute="centerY" secondItem="vuT-en-bZQ" secondAttribute="centerY" id="iiD-3A-5tC"/>
+                                        </constraints>
+                                    </view>
+                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dkc-XM-WT2">
+                                        <rect key="frame" x="0.0" y="35" width="414" height="216"/>
+                                    </pickerView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="4aT-iz-TOX" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="3Tc-Lv-XqD"/>
+                            <constraint firstItem="Cmc-63-POD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="3fS-Ri-EtY"/>
+                            <constraint firstItem="4aT-iz-TOX" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="E4w-Ru-iOg"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Cmc-63-POD" secondAttribute="trailing" constant="20" id="KPK-er-ZMk"/>
+                            <constraint firstAttribute="bottom" secondItem="4aT-iz-TOX" secondAttribute="bottom" id="eVB-oI-TuV"/>
+                            <constraint firstItem="Cmc-63-POD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="200" id="wIR-er-UbO"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="containerView" destination="Cmc-63-POD" id="YwD-lB-D8O"/>
+                        <outlet property="hourTextView" destination="ZDj-2m-JTV" id="0US-u2-agU"/>
+                        <outlet property="minTextView" destination="DZ6-2C-CFm" id="umP-ex-T2n"/>
+                        <outlet property="secTextView" destination="5dE-97-YzN" id="feo-wJ-OFr"/>
+                        <outlet property="timePickerStackView" destination="4aT-iz-TOX" id="mbN-vf-ast"/>
+                        <outlet property="timePickerView" destination="Dkc-XM-WT2" id="sPy-Z0-GA1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="131.8840579710145" y="108.48214285714285"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
