@@ -20,6 +20,8 @@
 		08B299BC27411F3E00D17D79 /* ContentRankCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B299BB27411F3E00D17D79 /* ContentRankCell.swift */; };
 		08B299BE274122C600D17D79 /* ContentMainCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B299BD274122C600D17D79 /* ContentMainCell.swift */; };
 		08B299C02741286B00D17D79 /* UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B299BF2741286B00D17D79 /* UIButton.swift */; };
+		08D1001F275660E100134D6E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D1001E275660E100134D6E /* ContentView.swift */; };
+		08D10021275662A800134D6E /* ContentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D10020275662A800134D6E /* ContentDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,8 @@
 		08B299BB27411F3E00D17D79 /* ContentRankCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentRankCell.swift; sourceTree = "<group>"; };
 		08B299BD274122C600D17D79 /* ContentMainCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentMainCell.swift; sourceTree = "<group>"; };
 		08B299BF2741286B00D17D79 /* UIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButton.swift; sourceTree = "<group>"; };
+		08D1001E275660E100134D6E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		08D10020275662A800134D6E /* ContentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +80,8 @@
 				0849C211273AAF32005D16CC /* LaunchScreen.storyboard */,
 				0849C214273AAF32005D16CC /* Info.plist */,
 				0849C21A273AAF98005D16CC /* HomeVC.swift */,
+				08D1001E275660E100134D6E /* ContentView.swift */,
+				08D10020275662A800134D6E /* ContentDetailView.swift */,
 				08B299BD274122C600D17D79 /* ContentMainCell.swift */,
 				08B299BF2741286B00D17D79 /* UIButton.swift */,
 				08B299BB27411F3E00D17D79 /* ContentRankCell.swift */,
@@ -165,11 +171,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				08B299BE274122C600D17D79 /* ContentMainCell.swift in Sources */,
+				08D10021275662A800134D6E /* ContentDetailView.swift in Sources */,
 				0849C21B273AAF98005D16CC /* HomeVC.swift in Sources */,
 				0849C207273AAF30005D16CC /* AppDelegate.swift in Sources */,
 				08B299BC27411F3E00D17D79 /* ContentRankCell.swift in Sources */,
 				0849C226273AB470005D16CC /* ContentCell.swift in Sources */,
 				0849C209273AAF30005D16CC /* SceneDelegate.swift in Sources */,
+				08D1001F275660E100134D6E /* ContentView.swift in Sources */,
 				0849C228273AB5CB005D16CC /* ContentHeader.swift in Sources */,
 				0849C222273AB23C005D16CC /* Content.swift in Sources */,
 				08B299C02741286B00D17D79 /* UIButton.swift in Sources */,

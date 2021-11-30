@@ -203,27 +203,34 @@ extension HomeVC {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let sectionName = contents[indexPath.section].sectionName
-        debugPrint("\(sectionName)섹션의 \(indexPath.row + 1)번째 콘텐츠")
+//        let sectionName = contents[indexPath.section].sectionName
+//        debugPrint("\(sectionName)섹션의 \(indexPath.row + 1)번째 콘텐츠")
+        
+        let isFirstSection = indexPath.section == 0
+        let selectedItem = isFirstSection ? mainItem : contents[indexPath.section].contentItem[indexPath.row]
+        
+        let contentDetailView = ContentDetailView(item: selectedItem)
+        let hostingVC = UIHostingController(rootView: contentDetailView)
+        self.show(hostingVC, sender: nil)
     }
 }
 
 // Preview
 struct HomeVCPreview: PreviewProvider {
     static var previews: some View {
-        Container().edgesIgnoringSafeArea(.all)
+        HomeVCRepresentable().edgesIgnoringSafeArea(.all)
+    }
+}
+
+struct HomeVCRepresentable: UIViewControllerRepresentable {
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        let layout = UICollectionViewLayout()
+        let homeVC = HomeVC(collectionViewLayout: layout)
+        return UINavigationController(rootViewController: homeVC)
     }
     
-    struct Container: UIViewControllerRepresentable {
-
-        func makeUIViewController(context: Context) -> UIViewController {
-            let layout = UICollectionViewLayout()
-            let homeVC = HomeVC(collectionViewLayout: layout)
-            return UINavigationController(rootViewController: homeVC)
-        }
-        
-        func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
-        
-        typealias UIViewControllerType = UIViewController
-    }
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+    
+    typealias UIViewControllerType = UIViewController
 }
