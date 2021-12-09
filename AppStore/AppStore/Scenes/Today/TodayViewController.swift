@@ -9,6 +9,8 @@ import UIKit
 import SnapKit
 
 final class TodayViewController: UIViewController {
+    private var todayList = [Today]()
+    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -37,16 +39,14 @@ final class TodayViewController: UIViewController {
         collectionView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+        
+        fetchData()
     }
 }
 
 extension TodayViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return todayList.count
     }
     
     func collectionView(
@@ -62,7 +62,7 @@ extension TodayViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
 
-        todayCell.configure()
+        todayCell.setup(with: self.todayList[indexPath.item])
 
         return todayCell
     }
@@ -83,14 +83,10 @@ extension TodayViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        header.setupView()
+        header.setup()
         
         return header
     }
-}
-
-extension TodayViewController: UICollectionViewDelegate {
-    
 }
 
 extension TodayViewController: UICollectionViewDelegateFlowLayout {
@@ -127,5 +123,32 @@ extension TodayViewController: UICollectionViewDelegateFlowLayout {
             bottom: value,
             right: value
         )
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        let today = todayList[indexPath.item]
+        let appInfo = AppInfo(appName: today.title, type: today.subTitle, imageURL: today.imageURL)
+        let appDetailVC = AppDetailViewController(appInfo: appInfo)
+        present(appDetailVC, animated: true)
+    }
+}
+
+private extension TodayViewController {
+    func fetchData() {
+        guard let url = Bundle.main.url(forResource: "Today", withExtension: "plist")
+        else { return }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let result = try PropertyListDecoder().decode([Today].self, from: data)
+            
+            self.todayList = result
+            self.collectionView.reloadData()
+        } catch {
+            debugPrint("Error Fetch Today Data: \(error.localizedDescription)")
+        }
     }
 }

@@ -29,7 +29,7 @@ final class TodayCollectionHeaderView: UICollectionReusableView {
         return label
     }()
     
-    func setupView() {
+    func setup() {
         [dateLabel, titleLabel]
             .forEach { addSubview($0) }
         
