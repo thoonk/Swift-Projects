@@ -9,6 +9,8 @@ import UIKit
 import SnapKit
 
 final class FeatureSectionView: UIView {
+    private var featureList = [Feature]()
+    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -24,15 +26,21 @@ final class FeatureSectionView: UIView {
         collectionView.backgroundColor = .systemBackground
         collectionView.showsHorizontalScrollIndicator = false
         
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "FeatureSectionCollectionViewCell")
+        collectionView.register(
+            FeatureSectionCollectionViewCell.self,
+            forCellWithReuseIdentifier: FeatureSectionCollectionViewCell.identifier
+        )
         
         return collectionView
     }()
+    
+    private let separatorView = SeparatorView(frame: .zero)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setupView()
+        fetchData()
     }
     
     required init?(coder: NSCoder) {
@@ -42,22 +50,25 @@ final class FeatureSectionView: UIView {
 
 extension FeatureSectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        5
+        return featureList.count
     }
     
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath)
     -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FeatureSectionCollectionViewCell", for: indexPath)
-        cell.backgroundColor = .black
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: FeatureSectionCollectionViewCell.identifier,
+            for: indexPath
+        ) as? FeatureSectionCollectionViewCell
+        else {
+            return UICollectionViewCell()
+        }
+        
+        cell.setup(with: featureList[indexPath.item])
         
         return cell
     }
-}
-
-extension FeatureSectionView: UICollectionViewDelegate {
-    
 }
 
 extension FeatureSectionView: UICollectionViewDelegateFlowLayout {
@@ -93,11 +104,23 @@ extension FeatureSectionView: UICollectionViewDelegateFlowLayout {
     ) -> CGFloat {
         return 32.0
     }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        let feature = self.featureList[indexPath.item]
+        let appInfo = AppInfo(appName: feature.appName, type: feature.description, imageURL: feature.imageURL)
+        let appDetailVC = AppDetailViewController(appInfo: appInfo)
+        if let appVC = self.parentViewController {
+            appVC.navigationController?.pushViewController(appDetailVC, animated: true)
+        }
+    }
 }
 
 private extension FeatureSectionView {
     func setupView() {
-        [collectionView]
+        [collectionView, separatorView]
             .forEach { addSubview($0) }
         
         collectionView.snp.makeConstraints {
@@ -106,6 +129,28 @@ private extension FeatureSectionView {
             $0.top.equalToSuperview().inset(16.0)
             $0.bottom.equalToSuperview()
             $0.height.equalTo(snp.width)
+        }
+        
+        separatorView.snp.makeConstraints {
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.top.equalTo(collectionView.snp.bottom).offset(16.0)
+            $0.bottom.equalToSuperview()
+        }
+    }
+    
+    func fetchData() {
+        guard let url = Bundle.main.url(forResource: "Feature", withExtension: "plist")
+        else { return }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let result = try PropertyListDecoder().decode([Feature].self, from: data)
+            
+            self.featureList = result
+            self.collectionView.reloadData()
+        } catch {
+            debugPrint("Error Fetch Feature Data: \(error.localizedDescription)")
         }
     }
 }
