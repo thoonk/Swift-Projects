@@ -10,8 +10,7 @@ import SnapKit
 import Alamofire
 
 class StationSearchViewController: UIViewController {
-    private var numberOfCell = 0
-    
+    private var stations = [Station]()
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.dataSource = self
@@ -26,8 +25,6 @@ class StationSearchViewController: UIViewController {
         
         setNavigationItem()
         setTableViewLayout()
-        
-        requestStationName()
     }
     
     private func setNavigationItem() {
@@ -47,15 +44,27 @@ class StationSearchViewController: UIViewController {
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
     
-    private func requestStationName() {
-        let urlString = "http://openapi.seoul.go.kr:8088/sample/json/SearchInfoBySubwayNameService/1/5/서울"
+    private func request(from stationName: String) {
+        let urlString = "http://openapi.seoul.go.kr:8088/sample/json/SearchInfoBySubwayNameService/1/5/\(stationName)"
         
         AF.request(urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
-            .responseDecodable(of: StationResponseModel.self) { response in
-                debugPrint(response)
+            .responseDecodable(of: StationResponseModel.self) { [weak self] response in
+                guard let self = self else { return }
+                
                 switch response.result {
                 case .success(let data):
                     debugPrint(data.stations)
+                    self.stations = data.stations
+                    
+                    // 도전과제: 역 이름이 중복되는 경우, 하나만 표시하기
+                    for (index, value) in self.stations.enumerated().reversed()  {
+                        if self.stations.filter ({ $0.stationName == value.stationName }).count > 1 {
+                            self.stations.remove(at: index)
+                        }
+                    }
+                    
+                    self.tableView.reloadData()
+                    
                 case .failure(let err):
                     debugPrint("Error: \(err)")
                 }
@@ -66,15 +75,17 @@ class StationSearchViewController: UIViewController {
 
 extension StationSearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return numberOfCell
+        return stations.count
     }
     
     func tableView(
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = "\(indexPath)"
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
+        let station = stations[indexPath.row]
+        cell.textLabel?.text = station.stationName
+        cell.detailTextLabel?.text = station.lineNumber
         
         return cell
     }
@@ -83,20 +94,23 @@ extension StationSearchViewController: UITableViewDataSource {
 extension StationSearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let stationDetailVC = StationDetailViewController()
+        let stationDetailVC = StationDetailViewController(station: self.stations[indexPath.row])
         self.navigationController?.pushViewController(stationDetailVC, animated: true)
     }
 }
 
 extension StationSearchViewController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        numberOfCell = 10
         tableView.isHidden = false
         tableView.reloadData()
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        numberOfCell = 0
         tableView.isHidden = true
+        stations = []
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        self.request(from: searchText)
     }
 }

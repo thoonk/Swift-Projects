@@ -10,6 +10,9 @@ import SnapKit
 import Alamofire
 
 final class StationDetailViewController: UIViewController {
+    private let station: Station
+    private var realtimeArrivalList = [StationArrivalDataResponseModel.RealTimeArrival]()
+    
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(fetchData), for: .valueChanged)
@@ -48,7 +51,8 @@ final class StationDetailViewController: UIViewController {
         return collectionView
     }()
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    init(station: Station) {
+        self.station = station
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -59,7 +63,7 @@ final class StationDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "왕십리"
+        navigationItem.title = "\(station.stationName)"
         setCollectionViewLayout()
         fetchData()
     }
@@ -72,29 +76,41 @@ final class StationDetailViewController: UIViewController {
     }
     
     @objc func fetchData() {
-        
-        let stationName = "서울역"
+        let stationName = self.station.stationName
         let urlString = "http://swopenapi.seoul.go.kr/api/subway/sample/json/realtimeStationArrival/0/5/\(stationName.replacingOccurrences(of: "역", with: ""))"
         
         AF.request(urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
             .responseDecodable(of: StationArrivalDataResponseModel.self) { [weak self] response in
                 guard let self = self else { return }
-                debugPrint(response)
+                
+                self.refreshControl.endRefreshing()
+
                 switch response.result {
                 case .success(let data):
                     debugPrint(data.realtimeArrivalList)
-                    self.refreshControl.endRefreshing()
+                    self.realtimeArrivalList = data.realtimeArrivalList
+                    self.collectionView.reloadData()
+                    self.autoFetching()
+                    
                 case .failure(let err):
                     debugPrint("Error: \(err)")
                 }
             }
             .resume()
     }
+    
+    /// 도전과제: 도착 정보 표시 후, 1분 뒤에 자동으로 서버에 요청하는 코드 구현
+    private func autoFetching() {
+        let timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: false, block: { _ in
+            self.fetchData()
+        })
+        RunLoop.current.add(timer, forMode: .common)
+    }
 }
 
 extension StationDetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return self.realtimeArrivalList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -106,7 +122,7 @@ extension StationDetailViewController: UICollectionViewDataSource {
              return UICollectionViewCell()
         }
         
-        cell.setup()
+        cell.setup(with: realtimeArrivalList[indexPath.row])
         
         return cell
     }
