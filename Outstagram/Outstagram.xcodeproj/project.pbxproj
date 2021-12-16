@@ -7,16 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A21989A276B276A00ACBF31 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A219899276B276A00ACBF31 /* SnapKit */; };
+		6A8C1FAD276AE03E00E8D031 /* FeedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C1FAC276AE03E00E8D031 /* FeedTableViewCell.swift */; };
+		6A8C1FAF276AFC5E00E8D031 /* UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C1FAE276AFC5E00E8D031 /* UIButton.swift */; };
+		6A8C1FB1276B003C00E8D031 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8C1FB0276B003C00E8D031 /* ProfileViewController.swift */; };
 		6A8D35272769CC6900B6E234 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8D35262769CC6900B6E234 /* AppDelegate.swift */; };
 		6A8D35292769CC6900B6E234 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8D35282769CC6900B6E234 /* SceneDelegate.swift */; };
 		6A8D352B2769CC6900B6E234 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8D352A2769CC6900B6E234 /* FeedViewController.swift */; };
 		6A8D35302769CC6C00B6E234 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A8D352F2769CC6C00B6E234 /* Assets.xcassets */; };
 		6A8D35332769CC6C00B6E234 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A8D35312769CC6C00B6E234 /* LaunchScreen.storyboard */; };
-		6A8D353F2769CCFD00B6E234 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A8D353E2769CCFD00B6E234 /* SnapKit */; };
 		6A8D35412769CDB000B6E234 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8D35402769CDB000B6E234 /* TabBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6A8C1FAC276AE03E00E8D031 /* FeedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedTableViewCell.swift; sourceTree = "<group>"; };
+		6A8C1FAE276AFC5E00E8D031 /* UIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButton.swift; sourceTree = "<group>"; };
+		6A8C1FB0276B003C00E8D031 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		6A8D35232769CC6900B6E234 /* Outstagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outstagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A8D35262769CC6900B6E234 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6A8D35282769CC6900B6E234 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -32,7 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A8D353F2769CCFD00B6E234 /* SnapKit in Frameworks */,
+				6A21989A276B276A00ACBF31 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +67,9 @@
 				6A8D35262769CC6900B6E234 /* AppDelegate.swift */,
 				6A8D35282769CC6900B6E234 /* SceneDelegate.swift */,
 				6A8D352A2769CC6900B6E234 /* FeedViewController.swift */,
+				6A8C1FAC276AE03E00E8D031 /* FeedTableViewCell.swift */,
+				6A8C1FAE276AFC5E00E8D031 /* UIButton.swift */,
+				6A8C1FB0276B003C00E8D031 /* ProfileViewController.swift */,
 				6A8D35402769CDB000B6E234 /* TabBarController.swift */,
 				6A8D352F2769CC6C00B6E234 /* Assets.xcassets */,
 				6A8D35312769CC6C00B6E234 /* LaunchScreen.storyboard */,
@@ -86,7 +95,7 @@
 			);
 			name = Outstagram;
 			packageProductDependencies = (
-				6A8D353E2769CCFD00B6E234 /* SnapKit */,
+				6A219899276B276A00ACBF31 /* SnapKit */,
 			);
 			productName = Outstagram;
 			productReference = 6A8D35232769CC6900B6E234 /* Outstagram.app */;
@@ -117,7 +126,7 @@
 			);
 			mainGroup = 6A8D351A2769CC6900B6E234;
 			packageReferences = (
-				6A8D353D2769CCFD00B6E234 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				6A219898276B276A00ACBF31 /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 6A8D35242769CC6900B6E234 /* Products */;
 			projectDirPath = "";
@@ -149,6 +158,9 @@
 				6A8D35412769CDB000B6E234 /* TabBarController.swift in Sources */,
 				6A8D35272769CC6900B6E234 /* AppDelegate.swift in Sources */,
 				6A8D35292769CC6900B6E234 /* SceneDelegate.swift in Sources */,
+				6A8C1FB1276B003C00E8D031 /* ProfileViewController.swift in Sources */,
+				6A8C1FAD276AE03E00E8D031 /* FeedTableViewCell.swift in Sources */,
+				6A8C1FAF276AFC5E00E8D031 /* UIButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,20 +372,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		6A8D353D2769CCFD00B6E234 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+		6A219898276B276A00ACBF31 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
-				kind = exactVersion;
-				version = 5.0.1;
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6A8D353E2769CCFD00B6E234 /* SnapKit */ = {
+		6A219899276B276A00ACBF31 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6A8D353D2769CCFD00B6E234 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = 6A219898276B276A00ACBF31 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
