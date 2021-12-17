@@ -55,15 +55,30 @@ final class ProfileViewController: UIViewController {
         button.layer.cornerRadius = 3.0
         button.backgroundColor = .white
         button.setTitleColor(UIColor.label, for: .normal)
-        button.layer.borderWidth = 0.5
-        button.layer.borderColor = UIColor.tertiaryLabel.cgColor
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemGray4.cgColor
 
         return button
     }()
     
+    private let feedDataView = ProfileDataView(title: "게시물", count: 53)
+    private let followerDataView = ProfileDataView(title: "팔로워", count: 2_000)
+    private let followingDataView = ProfileDataView(title: "팔로잉", count: 123)
+    
     private lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView()
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 0.5
+        layout.minimumInteritemSpacing = 0.5
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .systemBackground
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        collectionView.register(
+            ProfileCollectionViewCell.self,
+            forCellWithReuseIdentifier: ProfileCollectionViewCell.identifier
+        )
         
         return collectionView
     }()
@@ -76,6 +91,42 @@ final class ProfileViewController: UIViewController {
     }
 }
 
+extension ProfileViewController: UICollectionViewDataSource {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        return 15
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: ProfileCollectionViewCell.identifier,
+            for: indexPath
+        ) as? ProfileCollectionViewCell
+        else { return UICollectionViewCell() }
+        
+        cell.setup()
+        
+        return cell
+    }
+}
+
+extension ProfileViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let width: CGFloat = (collectionView.frame.width / 3) - 1.0
+        return CGSize(width: width, height: width)
+    }
+}
+
+
 private extension ProfileViewController {
     func setupNavigationBar() {
         navigationItem.title = "thoonk"
@@ -84,14 +135,22 @@ private extension ProfileViewController {
             image: UIImage(systemName: "ellipsis"),
             style: .plain,
             target: self,
-            action: nil
+            action: #selector(didTapEllipsisButton)
         )
         
         navigationItem.rightBarButtonItem = ellipsisButton
     }
     
-    func setupCollectionView() {
+    @objc func didTapEllipsisButton() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
+        [
+            UIAlertAction(title: "회원 정보 변경", style: .default),
+            UIAlertAction(title: "탈퇴하기", style: .destructive),
+            UIAlertAction(title: "닫기", style: .cancel)
+        ].forEach { actionSheet.addAction($0) }
+        
+        present(actionSheet, animated: true)
     }
     
     func setupLayout() {
@@ -99,11 +158,20 @@ private extension ProfileViewController {
         buttonStackView.spacing = 4.0
         buttonStackView.distribution = .fillEqually
         
+        let dataStackView = UIStackView(arrangedSubviews: [
+            feedDataView, followerDataView, followingDataView
+        ])
+        
+        dataStackView.spacing = 4.0
+        dataStackView.distribution = .fillEqually
+        
         [
             profileImageView,
+            dataStackView,
             nameLabel,
             descriptionLabel,
-            buttonStackView
+            buttonStackView,
+            collectionView
         ].forEach { view.addSubview($0) }
         
         let inset: CGFloat = 16.0
@@ -113,6 +181,12 @@ private extension ProfileViewController {
             $0.top.equalTo(view.safeAreaLayoutGuide).inset(inset)
             $0.width.equalTo(80.0)
             $0.height.equalTo(profileImageView.snp.width)
+        }
+        
+        dataStackView.snp.makeConstraints {
+            $0.leading.equalTo(profileImageView.snp.trailing).offset(inset)
+            $0.trailing.equalToSuperview().inset(inset)
+            $0.centerY.equalTo(profileImageView.snp.centerY)
         }
         
         nameLabel.snp.makeConstraints {
@@ -132,5 +206,12 @@ private extension ProfileViewController {
             $0.trailing.equalTo(nameLabel.snp.trailing)
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(12.0)
         }
+        
+        collectionView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(buttonStackView.snp.bottom).offset(16.0)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
     }
 }
+
