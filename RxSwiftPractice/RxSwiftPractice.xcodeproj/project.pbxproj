@@ -26,6 +26,7 @@
 		08D100B22778690E00134D6E /* Observable.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Observable.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08D100B32778811200134D6E /* Traits.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Traits.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08D100B427788E9C00134D6E /* Subjects.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Subjects.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		6A173AC127793CFB00F87431 /* TransformingOperator.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TransformingOperator.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +49,7 @@
 				08D100B22778690E00134D6E /* Observable.playground */,
 				08D100B32778811200134D6E /* Traits.playground */,
 				08D100B427788E9C00134D6E /* Subjects.playground */,
+				6A173AC127793CFB00F87431 /* TransformingOperator.playground */,
 				08D10096277867B900134D6E /* RxSwiftPractice */,
 				08D10095277867B900134D6E /* Products */,
 			);
