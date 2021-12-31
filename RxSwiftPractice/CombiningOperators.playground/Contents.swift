@@ -46,10 +46,10 @@ Observable.merge(odds, evens)
     .disposed(by: bag)
 
 print("------combineLatest------")
-let left = PublishSubject<Int>()
-let right = PublishSubject<String>()
+let leftSubject = PublishSubject<Int>()
+let rightSubject = PublishSubject<String>()
 
-Observable.combineLatest(left, right) {
+Observable.combineLatest(leftSubject, rightSubject) {
     "\($0)+\($1)"
 }
 .subscribe(onNext: {
@@ -57,14 +57,14 @@ Observable.combineLatest(left, right) {
 })
 .disposed(by: bag)
 
-left.onNext(1)
-right.onNext("A")
-left.onNext(2)
-right.onNext("B")
-right.onNext("C")
-right.onNext("D")
-left.onNext(3)
-left.onNext(4)
+leftSubject.onNext(1)
+rightSubject.onNext("A")
+leftSubject.onNext(2)
+rightSubject.onNext("B")
+rightSubject.onNext("C")
+rightSubject.onNext("D")
+leftSubject.onNext(3)
+leftSubject.onNext(4)
 
 print("------zip------")
 let left = Observable.of(1, 2, 3, 4)
@@ -72,6 +72,95 @@ let right = Observable.of("A", "B", "C", "D")
 
 Observable.zip(left, right) {
     "\($0)+\($1)"
+}
+.subscribe(onNext: {
+    print($0)
+})
+.disposed(by: bag)
+
+print("------withLatestFrom------")
+let button1 = PublishSubject<Void>()
+let textField1 = PublishSubject<String>()
+
+button1.withLatestFrom(textField1)
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
+
+textField1.onNext("H")
+textField1.onNext("Her")
+textField1.onNext("Here")
+button1.onNext(())
+button1.onNext(())
+
+print("------sample------")
+let button2 = PublishSubject<Void>()
+let textField2 = PublishSubject<String>()
+
+textField2.sample(button2)
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
+
+textField2.onNext("I")
+textField2.onNext("I am")
+button2.onNext(())
+button2.onNext(())
+
+print("------amb------")
+let firstSubject = PublishSubject<Int>()
+let secondSubject = PublishSubject<Int>()
+
+firstSubject.amb(secondSubject)
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
+
+firstSubject.onNext(1)
+secondSubject.onNext(20)
+firstSubject.onNext(2)
+secondSubject.onNext(40)
+firstSubject.onNext(3)
+secondSubject.onNext(60)
+
+print("------switchLatest------")
+let one = PublishSubject<String>()
+let two = PublishSubject<String>()
+let source = PublishSubject<Observable<String>>()
+
+source
+    .switchLatest()
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
+
+source.onNext(one)
+one.onNext("This is one.")
+one.onNext("is This one?")
+source.onNext(two)
+two.onNext("This is two.")
+two.onNext("is This two?")
+source.onNext(one)
+one.onNext("This is one.")
+
+print("------reduce------")
+Observable.of(1, 2, 3, 4, 5)
+    .reduce(0, accumulator: +)
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
+
+print("------scan------")
+let nums = Observable.of(1, 2, 3, 4, 5)
+let scan = nums.scan(0, accumulator: +)
+
+Observable.zip(nums, scan) {
+     "nums: \($0), scan: \($1)"
 }
 .subscribe(onNext: {
     print($0)
