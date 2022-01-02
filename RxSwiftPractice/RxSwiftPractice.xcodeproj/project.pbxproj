@@ -18,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		08B28F8E278078AA009A22A1 /* FilteringOperators.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FilteringOperators.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		08B28F8F2781D6B4009A22A1 /* TimeBasedOperators.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TimeBasedOperators.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08D10094277867B900134D6E /* RxSwiftPractice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxSwiftPractice.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08D10097277867B900134D6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		08D10099277867B900134D6E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -54,6 +55,7 @@
 				08B28F8E278078AA009A22A1 /* FilteringOperators.playground */,
 				6A173AC127793CFB00F87431 /* TransformingOperator.playground */,
 				08D100B5277C9B2E00134D6E /* CombiningOperators.playground */,
+				08B28F8F2781D6B4009A22A1 /* TimeBasedOperators.playground */,
 				08D10096277867B900134D6E /* RxSwiftPractice */,
 				08D10095277867B900134D6E /* Products */,
 			);
