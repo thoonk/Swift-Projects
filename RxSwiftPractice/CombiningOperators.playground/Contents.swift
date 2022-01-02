@@ -1,4 +1,5 @@
 import RxSwift
+import Foundation
 
 let bag = DisposeBag() 
 
@@ -10,7 +11,7 @@ Observable.of(2, 3)
     })
     .disposed(by: bag)
 
-print("------concat------")
+print("------concat1------")
 let firstObservables = Observable.of(1, 1, 1)
 let secondObservables = Observable.of(2, 2)
 
@@ -21,9 +22,18 @@ firstObservables
     })
     .disposed(by: bag)
 
+print("------concat2------")
+Observable.concat([firstObservables, secondObservables])
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
+
 print("------concatMap------")
-let sequences = ["Number": Observable.of("1", "2", "3"),
-                 "Alphabet": Observable.of("A", "B", "C")]
+let sequences = [
+    "Number": Observable.of("1", "2", "3"),
+    "Alphabet": Observable.of("A", "B", "C")
+]
 
 Observable.of("Number", "Alphabet")
     .concatMap({
@@ -34,18 +44,27 @@ Observable.of("Number", "Alphabet")
     })
     .disposed(by: bag)
 
-print("------merge------")
+print("------merge1------")
 let odds = Observable.of(1, 3, 5, 7)
 let evens = Observable.of(2, 4, 6)
 let c = Observable.of("c", "c")
 
-Observable.merge(odds, evens)
+Observable.of(odds, evens)
+    .merge()
     .subscribe(onNext: {
         print($0)
     })
     .disposed(by: bag)
 
-print("------combineLatest------")
+print("------merge2------")
+Observable.of(odds, evens)
+    .merge(maxConcurrent: 1)
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
+
+print("------combineLatest1------")
 let leftSubject = PublishSubject<Int>()
 let rightSubject = PublishSubject<String>()
 
@@ -65,6 +84,41 @@ rightSubject.onNext("C")
 rightSubject.onNext("D")
 leftSubject.onNext(3)
 leftSubject.onNext(4)
+
+print("------combineLatest2------")
+let dateDisplayFormat = Observable<DateFormatter.Style>.of(.short, .long)
+let currentDate = Observable<Date>.of(Date())
+
+Observable.combineLatest(
+    dateDisplayFormat,
+    currentDate,
+    resultSelector: { format, date -> String in
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = format
+        return dateFormatter.string(from: date)
+    }
+)
+.subscribe(onNext: {
+    print($0)
+})
+.disposed(by: bag)
+
+print("------combineLatest2------")
+let lastName = PublishSubject<String>()
+let firstName = PublishSubject<String>()
+
+Observable.combineLatest([firstName, lastName]) {
+    $0.joined(separator: " ")
+}
+.subscribe(onNext: {
+    print($0)
+})
+.disposed(by: bag)
+
+lastName.onNext("Kim")
+firstName.onNext("Paul")
+firstName.onNext("Taehoon")
+firstName.onNext("shin")
 
 print("------zip------")
 let left = Observable.of(1, 2, 3, 4)
@@ -94,20 +148,34 @@ textField1.onNext("Here")
 button1.onNext(())
 button1.onNext(())
 
-print("------sample------")
+print("------withLatestFrom(as the sample operates)------")
 let button2 = PublishSubject<Void>()
 let textField2 = PublishSubject<String>()
 
-textField2.sample(button2)
+button2.withLatestFrom(textField2)
+    .distinctUntilChanged()
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
+textField2.onNext("Hi")
+button2.onNext(())
+button2.onNext(())
+
+print("------sample------")
+let button3 = PublishSubject<Void>()
+let textField3 = PublishSubject<String>()
+
+textField3.sample(button3)
     .subscribe(onNext: {
         print($0)
     })
     .disposed(by: bag)
 
-textField2.onNext("I")
-textField2.onNext("I am")
-button2.onNext(())
-button2.onNext(())
+textField3.onNext("I")
+textField3.onNext("I am")
+button3.onNext(())
+button3.onNext(())
 
 print("------amb------")
 let firstSubject = PublishSubject<Int>()
