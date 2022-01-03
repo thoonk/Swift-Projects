@@ -5,86 +5,148 @@
 //  Created by MA2103 on 2021/12/30.
 //
 
-import Player
 import UIKit
+import AVKit
+import SnapKit
 
 final class PlayerVC: UIViewController {
-    fileprivate var player = Player()
+//    fileprivate var player = Player()
+    var playerLayer: AVPlayerLayer = AVPlayerLayer()
+    var player: AVPlayer?
+    var pictureInPictureController: AVPictureInPictureController?
+    var pipButton = UIButton()
+    var videoPlayerView: VideoPlayerView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        self.player = Player()
-//        self.player.playerDelegate = self
-        self.player.playbackDelegate = self
-        self.player.view.frame = self.view.bounds
-
-        self.addChild(self.player)
-        self.view.addSubview(self.player.view)
-        self.player.didMove(toParent: self)
+        videoPlayerView = VideoPlayerView(frame: CGRect.zero)
+        if let videoPlayerView = videoPlayerView {
+            videoPlayerView.isUserInteractionEnabled = true
+            view.addSubview(videoPlayerView)
+            
+            videoPlayerView.snp.makeConstraints {
+                $0.leading.trailing.equalToSuperview()
+                $0.top.equalToSuperview().inset(50)
+                $0.height.equalTo(videoPlayerView.snp.width).multipliedBy(9.0/16.0).priority(750)
+            }
+        }
         
-        let videoURLString =  "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-
-        self.player.url = URL(string: videoURLString)
+        if AVPictureInPictureController.isPictureInPictureSupported() {
+            pictureInPictureController = AVPictureInPictureController(playerLayer: playerLayer)
+            pictureInPictureController?.delegate = self
+        } else {
+            print("PIP isn't supproted by the current device.")
+        }
         
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer(_:)))
-        tapGestureRecognizer.numberOfTapsRequired = 1
-        self.player.view.addGestureRecognizer(tapGestureRecognizer)
+        setupPIPButton()
+//        self.player.url = URL(string: videoURLString)
+        
+//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer(_:)))
+//        tapGestureRecognizer.numberOfTapsRequired = 1
+//        self.player.view.addGestureRecognizer(tapGestureRecognizer)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        self.player.playFromBeginning()
+//        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    deinit {
-        self.player.willMove(toParent: nil)
-        self.player.view.removeFromSuperview()
-        self.player.removeFromParent()
-    }
-}
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        print(size.width, size.height)
 
-private extension PlayerVC {
-    @objc func handleTapGestureRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
-        switch self.player.playbackState {
-        case .stopped:
-            self.player.playFromBeginning()
-            break
-        case .paused:
-            self.player.playFromCurrentTime()
-            break
-        case .playing:
-            self.player.pause()
-            break
-        case .failed:
-            self.player.pause()
-            break
+        guard let videoPlayerView = videoPlayerView else {
+            return
+        }
+        
+        if UIDevice.current.orientation.isLandscape {
+            videoPlayerView.snp.remakeConstraints {
+                $0.edges.equalToSuperview()
+            }
+        } else {
+            videoPlayerView.snp.remakeConstraints {
+                $0.leading.trailing.equalToSuperview()
+                $0.top.equalToSuperview().inset(50)
+                $0.height.equalTo(videoPlayerView.snp.width).multipliedBy(9.0/16.0).priority(750)
+            }
         }
     }
 }
 
-extension PlayerVC: PlayerPlaybackDelegate {
-    func playerCurrentTimeDidChange(_ player: Player) {
-//        let fraction = Double(player.currentTimeInterval) / Double(player.maximumDuration)
-
+private extension PlayerVC {
+//    @objc func handleTapGestureRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
+//        switch self.player.playbackState {
+//        case .stopped:
+//            self.player.playFromBeginning()
+//            break
+//        case .paused:
+//            self.player.playFromCurrentTime()
+//            break
+//        case .playing:
+//            self.player.pause()
+//            break
+//        case .failed:
+//            self.player.pause()
+//            break
+//        }
+//    }
+    
+    func setupPIPButton() {
+        let startImage = AVPictureInPictureController.pictureInPictureButtonStartImage
+        
+        pipButton = UIButton(type: .system)
+        pipButton.setImage(startImage, for: .normal)
+        pipButton.frame = CGRect(x: 24, y: 48, width: 40, height: 40)
+        pipButton.addTarget(self, action: #selector(pipButtonTapped(_:)), for: .touchUpInside)
     }
     
-    func playerPlaybackWillStartFromBeginning(_ player: Player) {
+    @objc func pipButtonTapped(_ sender: UIButton) {
+        guard let isActive = pictureInPictureController?.isPictureInPictureActive else { return }
         
-    }
-    
-    func playerPlaybackDidEnd(_ player: Player) {
-        
-    }
-    
-    func playerPlaybackWillLoop(_ player: Player) {
-        
-    }
-    
-    func playerPlaybackDidLoop(_ player: Player) {
-        
+        if isActive {
+            pictureInPictureController?.stopPictureInPicture()
+            
+            let startImage = AVPictureInPictureController.pictureInPictureButtonStartImage
+            pipButton.setImage(startImage, for: .normal)
+        } else {
+            pictureInPictureController?.startPictureInPicture()
+            
+            let stopImage = AVPictureInPictureController.pictureInPictureButtonStopImage
+            pipButton.setImage(stopImage, for: .normal)
+        }
     }
 }
+
+extension PlayerVC: AVPictureInPictureControllerDelegate {
+    func pictureInPictureControllerWillStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        print("PIP will stop")
+    }
+    
+    func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        print("PIP did stopped")
+    }
+}
+
+//extension PlayerVC: PlayerPlaybackDelegate {
+//    func playerCurrentTimeDidChange(_ player: Player) {
+////        let fraction = Double(player.currentTimeInterval) / Double(player.maximumDuration)
+//
+//    }
+//
+//    func playerPlaybackWillStartFromBeginning(_ player: Player) {
+//
+//    }
+//
+//    func playerPlaybackDidEnd(_ player: Player) {
+//
+//    }
+//
+//    func playerPlaybackWillLoop(_ player: Player) {
+//
+//    }
+//
+//    func playerPlaybackDidLoop(_ player: Player) {
+//
+//    }
+//}
