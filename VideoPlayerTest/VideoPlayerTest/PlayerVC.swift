@@ -13,7 +13,7 @@ final class PlayerVC: UIViewController {
 //    fileprivate var player = Player()
     var playerLayer: AVPlayerLayer = AVPlayerLayer()
     var player: AVPlayer?
-    var pictureInPictureController: AVPictureInPictureController?
+    var pipController: AVPictureInPictureController?
     var pipButton = UIButton()
     var videoPlayerView: VideoPlayerView?
     
@@ -27,14 +27,8 @@ final class PlayerVC: UIViewController {
             setupPlayerOrientation()
         }
         
-        if AVPictureInPictureController.isPictureInPictureSupported() {
-            pictureInPictureController = AVPictureInPictureController(playerLayer: playerLayer)
-            pictureInPictureController?.delegate = self
-        } else {
-            print("PIP isn't supproted by the current device.")
-        }
         
-        setupPIPButton()
+        setupPIP()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,23 +56,6 @@ final class PlayerVC: UIViewController {
 }
 
 private extension PlayerVC {
-//    @objc func handleTapGestureRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
-//        switch self.player.playbackState {
-//        case .stopped:
-//            self.player.playFromBeginning()
-//            break
-//        case .paused:
-//            self.player.playFromCurrentTime()
-//            break
-//        case .playing:
-//            self.player.pause()
-//            break
-//        case .failed:
-//            self.player.pause()
-//            break
-//        }
-//    }
-    
     func setupPlayerOrientation() {
         guard let videoPlayerView = videoPlayerView else {
             return
@@ -100,25 +77,26 @@ private extension PlayerVC {
         }
     }
     
-    func setupPIPButton() {
-        let startImage = AVPictureInPictureController.pictureInPictureButtonStartImage
-        
-        pipButton = UIButton(type: .system)
-        pipButton.setImage(startImage, for: .normal)
-        pipButton.frame = CGRect(x: 24, y: 48, width: 40, height: 40)
-        pipButton.addTarget(self, action: #selector(pipButtonTapped(_:)), for: .touchUpInside)
+    func setupPIP() {
+        if let playerLayer = videoPlayerView?.playerLayer,
+           AVPictureInPictureController.isPictureInPictureSupported() {
+            pipController = AVPictureInPictureController(playerLayer: playerLayer)
+            pipController?.delegate = self
+        } else {
+            print("PIP isn't supproted by the current device.")
+        }
     }
     
     @objc func pipButtonTapped(_ sender: UIButton) {
-        guard let isActive = pictureInPictureController?.isPictureInPictureActive else { return }
+        guard let isActive = pipController?.isPictureInPictureActive else { return }
         
         if isActive {
-            pictureInPictureController?.stopPictureInPicture()
+            pipController?.stopPictureInPicture()
             
             let startImage = AVPictureInPictureController.pictureInPictureButtonStartImage
             pipButton.setImage(startImage, for: .normal)
         } else {
-            pictureInPictureController?.startPictureInPicture()
+            pipController?.startPictureInPicture()
             
             let stopImage = AVPictureInPictureController.pictureInPictureButtonStopImage
             pipButton.setImage(stopImage, for: .normal)
@@ -129,32 +107,10 @@ private extension PlayerVC {
 extension PlayerVC: AVPictureInPictureControllerDelegate {
     func pictureInPictureControllerWillStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
         print("PIP will stop")
+        
     }
     
     func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
         print("PIP did stopped")
     }
 }
-
-//extension PlayerVC: PlayerPlaybackDelegate {
-//    func playerCurrentTimeDidChange(_ player: Player) {
-////        let fraction = Double(player.currentTimeInterval) / Double(player.maximumDuration)
-//
-//    }
-//
-//    func playerPlaybackWillStartFromBeginning(_ player: Player) {
-//
-//    }
-//
-//    func playerPlaybackDidEnd(_ player: Player) {
-//
-//    }
-//
-//    func playerPlaybackWillLoop(_ player: Player) {
-//
-//    }
-//
-//    func playerPlaybackDidLoop(_ player: Player) {
-//
-//    }
-//}
