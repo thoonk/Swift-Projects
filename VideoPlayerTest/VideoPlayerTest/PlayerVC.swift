@@ -22,14 +22,9 @@ final class PlayerVC: UIViewController {
         
         videoPlayerView = VideoPlayerView(frame: CGRect.zero)
         if let videoPlayerView = videoPlayerView {
-            videoPlayerView.isUserInteractionEnabled = true
             view.addSubview(videoPlayerView)
             
-            videoPlayerView.snp.makeConstraints {
-                $0.leading.trailing.equalToSuperview()
-                $0.top.equalToSuperview().inset(50)
-                $0.height.equalTo(videoPlayerView.snp.width).multipliedBy(9.0/16.0).priority(750)
-            }
+            setupPlayerOrientation()
         }
         
         if AVPictureInPictureController.isPictureInPictureSupported() {
@@ -40,37 +35,29 @@ final class PlayerVC: UIViewController {
         }
         
         setupPIPButton()
-//        self.player.url = URL(string: videoURLString)
-        
-//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer(_:)))
-//        tapGestureRecognizer.numberOfTapsRequired = 1
-//        self.player.view.addGestureRecognizer(tapGestureRecognizer)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
 //        navigationController?.setNavigationBarHidden(true, animated: animated)
+        navigationController?.navigationBar.tintColor = .white
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+        navigationController?.navigationBar.tintColor = .label
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        print(size.width, size.height)
 
-        guard let videoPlayerView = videoPlayerView else {
-            return
-        }
-        
-        if UIDevice.current.orientation.isLandscape {
-            videoPlayerView.snp.remakeConstraints {
-                $0.edges.equalToSuperview()
-            }
-        } else {
-            videoPlayerView.snp.remakeConstraints {
-                $0.leading.trailing.equalToSuperview()
-                $0.top.equalToSuperview().inset(50)
-                $0.height.equalTo(videoPlayerView.snp.width).multipliedBy(9.0/16.0).priority(750)
-            }
-        }
+        setupPlayerOrientation()
+    }
+    
+    deinit {
+        debugPrint("#PlayerVC Deinit")
     }
 }
 
@@ -91,6 +78,27 @@ private extension PlayerVC {
 //            break
 //        }
 //    }
+    
+    func setupPlayerOrientation() {
+        guard let videoPlayerView = videoPlayerView else {
+            return
+        }
+        
+        if UIDevice.current.orientation.isLandscape {
+            view.backgroundColor = .black
+            videoPlayerView.snp.remakeConstraints {
+                $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+                $0.top.bottom.equalToSuperview()
+            }
+        } else {
+            view.backgroundColor = .systemBackground
+            videoPlayerView.snp.remakeConstraints {
+                $0.leading.trailing.equalToSuperview()
+                $0.top.equalToSuperview().inset(50)
+                $0.height.equalTo(videoPlayerView.snp.width).multipliedBy(9.0/16.0).priority(750)
+            }
+        }
+    }
     
     func setupPIPButton() {
         let startImage = AVPictureInPictureController.pictureInPictureButtonStartImage

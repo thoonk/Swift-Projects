@@ -22,13 +22,19 @@ class VideoPlayerView: UIView {
         }
     }
 
-    let activityIndicatorView: UIActivityIndicatorView = {
+    lazy var controlsContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0, alpha: 0.5)
+        return view
+    }()
+    
+    lazy var activityIndicatorView: UIActivityIndicatorView = {
         let aiv = UIActivityIndicatorView(style: .large)
         aiv.startAnimating()
         return aiv
     }()
     
-    let pauseButton: UIButton = {
+    lazy var pauseButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(systemName: "pause")
         button.tintColor = .white
@@ -50,43 +56,69 @@ class VideoPlayerView: UIView {
         isPlaying.toggle()
     }
     
-    let controlsContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(white: 0, alpha: 0.5)
-        return view
+    lazy var fullScreenButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(systemName: "arrow.up.left.an d.arrow.down.right")
+        button.tintColor = .white
+        button.backgroundColor = .clear
+        button.addTarget(self, action: #selector(handleFullScreen), for: .touchUpInside)
+        
+        return button
     }()
     
-    let videoLengthLabel: UILabel = {
+    @objc func handleFullScreen() {
+        if isFullScreen {
+            // portrait 전환
+            UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+        } else {
+            // landscape 전환
+            UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
+        }
+    }
+    
+    lazy var videoLengthLabel: UILabel = {
         let label = UILabel()
         label.text = "00:00"
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 13)
-        label.textAlignment = .right
+        label.textAlignment = .left
         label.sizeToFit()
         return label
     }()
     
-    let currentTimeLabel: UILabel = {
+    lazy var separotorLabel: UILabel = {
+        let label = UILabel()
+        label.text = "/"
+        label.textColor = .white
+        label.font = UIFont.boldSystemFont(ofSize: 13)
+        label.textAlignment = .left
+        label.sizeToFit()
+        return label
+    }()
+    
+    lazy var currentTimeLabel: UILabel = {
         let label = UILabel()
         label.text = "00:00"
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 13)
-        label.textAlignment = .right
+        label.textAlignment = .left
+        label.sizeToFit()
         return label
     }()
  
-    let videoSlider: UISlider = {
+    lazy var videoSlider: UISlider = {
         let slider = UISlider()
-        slider.minimumTrackTintColor = .systemBlue
-        slider.maximumTrackTintColor = .white
-        slider.setThumbImage(UIImage(systemName: "circle.fill"), for: .normal)
+        slider.minimumTrackTintColor = .white
+        slider.maximumTrackTintColor = .systemGray
+        let thumbnailImage = makeCircleWith(size: CGSize(width: 18, height: 18), backgroundColor: .white)
+        // UIImage(systemName: "circle.fill")
+        slider.setThumbImage(thumbnailImage, for: .normal)
+        // slider.thumbTintColor = .white
         slider.addTarget(self, action: #selector(handleSliderChange), for: .valueChanged)
         return slider
     }()
     
     @objc func handleSliderChange() {
-        print(videoSlider.value)
-        
         if let duration = player?.currentItem?.duration {
             
             let totalSeconds = CMTimeGetSeconds(duration)
@@ -101,50 +133,25 @@ class VideoPlayerView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         setupPlayerView()
         setupGradientLayer()
-        
-        addSubview(controlsContainerView)
-        controlsContainerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        controlsContainerView.addSubview(activityIndicatorView)
-        activityIndicatorView.snp.makeConstraints {
-            $0.centerX.centerY.equalToSuperview()
-        }
-        
-        controlsContainerView.addSubview(pauseButton)
-        pauseButton.snp.makeConstraints {
-            $0.centerX.centerY.equalToSuperview()
-            $0.width.height.equalTo(80)
-        }
-        
-        controlsContainerView.addSubview(videoLengthLabel)
-        videoLengthLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(5)
-            $0.bottom.equalToSuperview().inset(3)
-            $0.width.equalTo(50)
-            $0.height.equalTo(24)
-        }
-        
-        controlsContainerView.addSubview(currentTimeLabel)
-        currentTimeLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(5)
-            $0.bottom.equalTo(videoLengthLabel)
-            $0.width.equalTo(50)
-            $0.height.equalTo(24)
-        }
-        
-        controlsContainerView.addSubview(videoSlider)
-        videoSlider.snp.makeConstraints {
-            $0.trailing.equalTo(videoLengthLabel.snp.leading).offset(4)
-            $0.bottom.equalToSuperview()
-            $0.leading.equalTo(currentTimeLabel.snp.trailing).offset(4)
-            $0.height.equalTo(30)
-        }
+        setupOrientationObserver()
+        setupLayout()
         
         backgroundColor = .black
+    }
+    
+    deinit {
+        player?.pause()
+        playerLayer?.removeFromSuperlayer()
+        self.player = nil
+        
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIDevice.orientationDidChangeNotification,
+            object: nil
+        )
     }
     
     override func layoutSubviews() {
@@ -176,7 +183,8 @@ class VideoPlayerView: UIView {
 
 private extension VideoPlayerView {
     func setupPlayerView() {
-        let urlString = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        let urlString = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+        // "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 
         if let url = URL(string: urlString) {
             player = AVPlayer(url: url)
@@ -211,6 +219,63 @@ private extension VideoPlayerView {
         }
     }
     
+    func setupLayout() {
+        addSubview(controlsContainerView)
+        
+        controlsContainerView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(8)
+            $0.top.bottom.equalToSuperview()
+        }
+        
+        let videoTimeStackView = UIStackView(arrangedSubviews: [currentTimeLabel, separotorLabel, videoLengthLabel])
+        videoTimeStackView.distribution = .fillProportionally
+        videoTimeStackView.spacing = 4.0
+        
+        [
+            activityIndicatorView,
+            pauseButton,
+            videoSlider,
+            videoTimeStackView,
+            fullScreenButton
+        ]
+            .forEach { controlsContainerView.addSubview($0) }
+        
+        activityIndicatorView.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+        }
+        
+        pauseButton.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.width.height.equalTo(80)
+        }
+        
+        videoSlider.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(5)
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(30)
+        }
+        
+        videoTimeStackView.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(10)
+            $0.bottom.equalTo(videoSlider.snp.top).offset(5)
+            $0.height.equalTo(24)
+        }
+        
+        currentTimeLabel.snp.makeConstraints {
+            $0.width.greaterThanOrEqualTo(40)
+        }
+
+        videoLengthLabel.snp.makeConstraints {
+            $0.width.greaterThanOrEqualTo(40)
+        }
+        
+        fullScreenButton.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(10)
+            $0.bottom.equalTo(videoTimeStackView)
+            $0.width.height.equalTo(25)
+        }
+    }
+    
     func setupGradientLayer() {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = bounds
@@ -229,6 +294,25 @@ private extension VideoPlayerView {
     }
     
     @objc func onOrientationChanged() {
-
+        if isFullScreen {
+            // portrait 전환
+            fullScreenButton.setImage(systemName: "arrow.up.left.and.arrow.down.right")
+        } else {
+            // landscape 전환
+            fullScreenButton.setImage(systemName: "arrow.down.right.and.arrow.up.left")
+        }
+    }
+    
+    func makeCircleWith(size: CGSize, backgroundColor: UIColor) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        let context = UIGraphicsGetCurrentContext()
+        context?.setFillColor(backgroundColor.cgColor)
+        context?.setStrokeColor(UIColor.clear.cgColor)
+        let bounds = CGRect(origin: .zero, size: size)
+        context?.addEllipse(in: bounds)
+        context?.drawPath(using: .fill)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
     }
 }
