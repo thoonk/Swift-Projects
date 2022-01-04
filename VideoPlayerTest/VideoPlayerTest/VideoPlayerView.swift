@@ -144,8 +144,11 @@ class VideoPlayerView: UIView {
     
     deinit {
         player?.pause()
-        playerLayer?.removeFromSuperlayer()
+        player?.removeObserver(self, forKeyPath: "currentItem.loadedTimeRanges")
         self.player = nil
+        
+        playerLayer?.removeFromSuperlayer()
+        controlsContainerView.removeFromSuperview()
         
         NotificationCenter.default.removeObserver(
             self,
@@ -169,6 +172,9 @@ class VideoPlayerView: UIView {
             
             if let duration = player?.currentItem?.duration {
                 let seconds = CMTimeGetSeconds(duration)
+                
+                guard !(seconds.isNaN || seconds.isInfinite) else { return }
+                
                 let secondsText = Int(seconds.truncatingRemainder(dividingBy: 60))
                 let minutesText = String(format: "%02d", Int(seconds) / 60)
                 videoLengthLabel.text = "\(minutesText):\(secondsText)"
@@ -192,7 +198,7 @@ private extension VideoPlayerView {
 
             self.playerLayer = AVPlayerLayer(player: player)
             self.layer.addSublayer(playerLayer!)
-            self.playerLayer?.frame = self.bounds
+            self.playerLayer?.frame = frame
             self.playerLayer?.videoGravity = .resizeAspect
             
             player?.play()
