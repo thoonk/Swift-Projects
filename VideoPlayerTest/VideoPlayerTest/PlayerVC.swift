@@ -10,32 +10,32 @@ import AVKit
 import SnapKit
 
 final class PlayerVC: UIViewController {
-//    fileprivate var player = Player()
-    var playerLayer: AVPlayerLayer = AVPlayerLayer()
     var player: AVPlayer?
     var pipController: AVPictureInPictureController?
     var pipButton = UIButton()
-    var videoPlayerView: VideoPlayerView?
-    
+    var playerView: PlayerView?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        videoPlayerView = VideoPlayerView(frame: CGRect.zero)
-        if let videoPlayerView = videoPlayerView {
+        playerView = PlayerView(frame: CGRect.zero)
+        if let videoPlayerView = playerView {
             view.addSubview(videoPlayerView)
             
             setupPlayerOrientation()
         }
-        
-        
-        setupPIP()
+
+        DispatchQueue.main.async { [weak self] in
+            self?.setupPIP()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-//        navigationController?.setNavigationBarHidden(true, animated: animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
         navigationController?.navigationBar.tintColor = .white
+//        UIApplication.shared.statusBarUIView?.backgroundColor = .black
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -57,7 +57,7 @@ final class PlayerVC: UIViewController {
 
 private extension PlayerVC {
     func setupPlayerOrientation() {
-        guard let videoPlayerView = videoPlayerView else {
+        guard let videoPlayerView = playerView else {
             return
         }
         
@@ -71,35 +71,19 @@ private extension PlayerVC {
             view.backgroundColor = .systemBackground
             videoPlayerView.snp.remakeConstraints {
                 $0.leading.trailing.equalToSuperview()
-                $0.top.equalToSuperview().inset(50)
+                $0.top.equalTo(view.safeAreaLayoutGuide)
                 $0.height.equalTo(videoPlayerView.snp.width).multipliedBy(9.0/16.0).priority(750)
             }
         }
     }
     
     func setupPIP() {
-        if let playerLayer = videoPlayerView?.playerLayer,
+        if let playerLayer = playerView?.playerLayer,
            AVPictureInPictureController.isPictureInPictureSupported() {
             pipController = AVPictureInPictureController(playerLayer: playerLayer)
             pipController?.delegate = self
         } else {
             print("PIP isn't supproted by the current device.")
-        }
-    }
-    
-    @objc func pipButtonTapped(_ sender: UIButton) {
-        guard let isActive = pipController?.isPictureInPictureActive else { return }
-        
-        if isActive {
-            pipController?.stopPictureInPicture()
-            
-            let startImage = AVPictureInPictureController.pictureInPictureButtonStartImage
-            pipButton.setImage(startImage, for: .normal)
-        } else {
-            pipController?.startPictureInPicture()
-            
-            let stopImage = AVPictureInPictureController.pictureInPictureButtonStopImage
-            pipButton.setImage(stopImage, for: .normal)
         }
     }
 }
@@ -113,4 +97,37 @@ extension PlayerVC: AVPictureInPictureControllerDelegate {
     func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
         print("PIP did stopped")
     }
+}
+
+extension UIApplication {
+var statusBarUIView: UIView? {
+
+    if #available(iOS 13.0, *) {
+        let tag = 3848245
+
+        let keyWindow = UIApplication.shared.connectedScenes
+            .map({$0 as? UIWindowScene})
+            .compactMap({$0})
+            .first?.windows.first
+
+        if let statusBar = keyWindow?.viewWithTag(tag) {
+            return statusBar
+        } else {
+            let height = keyWindow?.windowScene?.statusBarManager?.statusBarFrame ?? .zero
+            let statusBarView = UIView(frame: height)
+            statusBarView.tag = tag
+            statusBarView.layer.zPosition = 999999
+
+            keyWindow?.addSubview(statusBarView)
+            return statusBarView
+        }
+
+    } else {
+
+        if responds(to: Selector(("statusBar"))) {
+            return value(forKey: "statusBar") as? UIView
+        }
+    }
+    return nil
+  }
 }
