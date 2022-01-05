@@ -14,7 +14,7 @@ final class MainVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        4
+        3
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -27,8 +27,6 @@ final class MainVC: UITableViewController {
             cell.textLabel?.text = "BMPlayer"
         case 2:
             cell.textLabel?.text = "FWPlayer"
-        case 3:
-            cell.textLabel?.text = "MyPlayer"
         default:
             cell.textLabel?.text = ""
         }
@@ -47,9 +45,6 @@ final class MainVC: UITableViewController {
         case 2:
             let fwPlayerVC = FWPlayerVC()
             navigationController?.pushViewController(fwPlayerVC, animated: true)
-        case 3:
-            let videoLauncher = VideoLauncher()
-            videoLauncher.showVideoPlayer()
         default:
             print("??")
         }
