@@ -9,22 +9,17 @@ import UIKit
 import AVFoundation
 import SnapKit
 
-enum SpeedRate: Float {
-    case speed05 = 0.5
-    case speed075 = 0.75
-    case originalSpeed = 1
-    case speed15 = 1.5
-    case speed2 = 2.0
-}
-
 protocol PlayerDelegate: AnyObject {
     func didSelectSpeed(with rate: SpeedRate)
 }
 
 final class PlayerView: UIView {
+    // MARK: - Properties
     var player: AVPlayer?
     var playerLayer: AVPlayerLayer?
-    var isPlaying = false
+    var isPlaying: Bool {
+        player?.rate != 0 && player?.error == nil
+    }
     
     var isFullScreen: Bool {
         get {
@@ -32,7 +27,19 @@ final class PlayerView: UIView {
             return interfaceOrientation.isLandscape
         }
     }
+    
+    var currentSpeed: SpeedRate = .originalSpeed {
+        didSet {
+            speedButton.setTitle("\(currentSpeed.title)", for: .normal)
+        }
+    }
+    
+    var delayItem: DispatchWorkItem?
+    var isControlVisible = true
+    var isPlayToTheEnd = false
+    var tapGesture: UITapGestureRecognizer!
 
+    // MARK: - UI Components
     lazy var controlsContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(white: 0, alpha: 0.5)
@@ -45,25 +52,24 @@ final class PlayerView: UIView {
         return aiv
     }()
     
-    lazy var pauseButton: UIButton = {
+    lazy var pausePlayButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(systemName: "pause", size: 30)
         button.tintColor = .white
         button.isHidden = true
-        button.addTarget(self, action: #selector(handlePause), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handlePausePlay), for: .touchUpInside)
         return button
     }()
     
-    @objc func handlePause() {
+    @objc func handlePausePlay() {
         if isPlaying {
             player?.pause()
-            pauseButton.setImage(systemName: "play", size: 30)
+            pausePlayButton.setImage(systemName: "play", size: 30)
         } else {
-            player?.play()
-            pauseButton.setImage(systemName: "pause", size: 30)
+            player?.rate = self.currentSpeed.value
+            pausePlayButton.setImage(systemName: "pause", size: 30)
+            autoDisappearControlView()
         }
-
-        isPlaying.toggle()
     }
     
     lazy var backwardButton: UIButton = {
@@ -134,9 +140,9 @@ final class PlayerView: UIView {
     
     lazy var speedButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(systemName: "speedometer", size: 15)
-        button.tintColor = .white
-        button.backgroundColor = .clear
+        button.setTitle("1.0x", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         button.addTarget(self, action: #selector(handleSpeed), for: .touchUpInside)
         
         return button
@@ -170,9 +176,8 @@ final class PlayerView: UIView {
     
     lazy var backButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(systemName: "chevron.backward", size: 15)
+        button.setImage(systemName: "chevron.backward", size: 20)
         button.tintColor = .white
-        button.backgroundColor = .clear
         button.addTarget(self, action: #selector(handleBack), for: .touchUpInside)
         
         return button
@@ -182,6 +187,23 @@ final class PlayerView: UIView {
         if let vc = self.parentViewController as? PlayerVC {
             vc.navigationController?.popViewController(animated: true)
         }
+    }
+    
+    lazy var replayButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "replay"), for: .normal)
+        button.tintColor = .white
+        button.addTarget(self, action: #selector(handleReplay), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
+    @objc func handleReplay() {
+        replayButton.isHidden = true
+        isPlayToTheEnd = false
+        
+        player?.seek(to: CMTime.zero)
+        player?.play()
     }
     
     lazy var videoLengthLabel: UILabel = {
@@ -223,22 +245,22 @@ final class PlayerView: UIView {
         slider.setThumbImage(thumbnailImage, for: .normal)
         // slider.thumbTintColor = .white
         slider.addTarget(self, action: #selector(handleSliderChange), for: .valueChanged)
+        slider.isContinuous = false
         return slider
     }()
     
     @objc func handleSliderChange() {
         if let duration = player?.currentItem?.duration {
-            
             let totalSeconds = CMTimeGetSeconds(duration)
             let value = Float64(videoSlider.value) * totalSeconds
             let seekTime = CMTime(value: Int64(value), timescale: 1)
             
             player?.seek(to: seekTime, completionHandler: { _ in
-                //
             })
         }
     }
     
+    // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -246,6 +268,8 @@ final class PlayerView: UIView {
         setupGradientLayer()
         setupOrientationObserver()
         setupLayout()
+        setupTapGesture()
+        autoDisappearControlView()
         
         backgroundColor = .black
     }
@@ -253,6 +277,7 @@ final class PlayerView: UIView {
     deinit {
         player?.pause()
         player?.removeObserver(self, forKeyPath: "currentItem.loadedTimeRanges")
+        player?.removeObserver(self, forKeyPath: "rate")
         self.player = nil
         
         playerLayer?.removeFromSuperlayer()
@@ -272,36 +297,55 @@ final class PlayerView: UIView {
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "currentItem.loadedTimeRanges" {
-            activityIndicatorView.stopAnimating()
-            controlsContainerView.backgroundColor = .clear
-            
-            [pauseButton, backwardButton, forwardButton]
-                .forEach { $0.isHidden = false }
-            
-            isPlaying = true
-            
-            if let duration = player?.currentItem?.duration {
-                let seconds = CMTimeGetSeconds(duration)
+        
+        if let keyPath = keyPath {
+            switch keyPath {
+            case "currentItem.loadedTimeRanges":
+                activityIndicatorView.stopAnimating()
+                controlsContainerView.backgroundColor = .clear
                 
-                guard !(seconds.isNaN || seconds.isInfinite) else { return }
+                [pausePlayButton, backwardButton, forwardButton]
+                    .forEach { $0.isHidden = false }
                 
-                let secondsText = Int(seconds.truncatingRemainder(dividingBy: 60))
-                let minutesText = String(format: "%02d", Int(seconds) / 60)
-                videoLengthLabel.text = "\(minutesText):\(secondsText)"
+                if let duration = player?.currentItem?.duration {
+                    let seconds = CMTimeGetSeconds(duration)
+                    
+                    guard !(seconds.isNaN || seconds.isInfinite) else { return }
+                    
+                    let secondsText = Int(seconds.truncatingRemainder(dividingBy: 60))
+                    let minutesText = String(format: "%02d", Int(seconds) / 60)
+                    videoLengthLabel.text = "\(minutesText):\(secondsText)"
+                }
+                
+            case "rate":
+                if let player = player {
+                    if player.rate == 0.0,
+                        let currentItem = player.currentItem {
+                        if player.currentTime() >= currentItem.duration {
+                            isPlayToTheEnd = true
+                            replayButton.isHidden = false
+                            [pausePlayButton, backwardButton, forwardButton]
+                                .forEach { $0.isHidden = true }
+                            controlViewAnimation(isVisible: true)
+                        }
+                    }
+                }
+            default:
+                break
             }
         }
     }
-    
+        
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
+// MARK: - Private Methods
 private extension PlayerView {
     func setupPlayerView() {
-        let urlString = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
-        // "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        let urlString =
+         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 
         if let url = URL(string: urlString) {
             player = AVPlayer(url: url)
@@ -316,6 +360,7 @@ private extension PlayerView {
             player?.play()
             
             player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
+            player?.addObserver(self, forKeyPath: "rate", options: .new, context: nil)
             
             let interval = CMTime(value: 1, timescale: 2)
             player?.addPeriodicTimeObserver(
@@ -350,7 +395,7 @@ private extension PlayerView {
         videoTimeStackView.distribution = .fillProportionally
         videoTimeStackView.spacing = 4.0
         
-        let centerControlStackView = UIStackView(arrangedSubviews: [backwardButton, pauseButton, forwardButton])
+        let centerControlStackView = UIStackView(arrangedSubviews: [backwardButton, pausePlayButton, forwardButton])
         centerControlStackView.alignment = .fill
         centerControlStackView.distribution = .fillEqually
         centerControlStackView.spacing = 50.0
@@ -362,7 +407,8 @@ private extension PlayerView {
             videoTimeStackView,
             fullScreenButton,
             speedButton,
-            backButton
+            backButton,
+            replayButton
         ]
             .forEach { controlsContainerView.addSubview($0) }
         
@@ -403,12 +449,16 @@ private extension PlayerView {
         
         speedButton.snp.makeConstraints {
             $0.top.trailing.equalToSuperview().inset(10)
-            $0.width.height.equalTo(20)
+            $0.width.height.equalTo(30)
         }
         
         backButton.snp.makeConstraints {
             $0.top.leading.equalToSuperview().inset(10)
-            $0.width.height.equalTo(20)
+            $0.width.height.equalTo(25)
+        }
+        
+        replayButton.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
         }
     }
     
@@ -418,6 +468,46 @@ private extension PlayerView {
         gradientLayer.colors = [UIColor.clear, UIColor.black]
         gradientLayer.locations = [0.7, 1.2]
         controlsContainerView.layer.addSublayer(gradientLayer)
+    }
+    
+    func setupTapGesture() {
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapGestureTapped(_:)))
+        addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func onTapGestureTapped(_ gesture: UITapGestureRecognizer) {
+        // controlView will appear or disappear
+        guard !isPlayToTheEnd else { return }
+        controlViewAnimation(isVisible: !isControlVisible)
+    }
+    
+    func autoDisappearControlView() {
+        if self.isControlVisible {
+            delayItem?.cancel()
+            delayItem = DispatchWorkItem { [weak self] in
+                if self?.isPlayToTheEnd == false {
+                    self?.controlViewAnimation(isVisible: false)
+                }
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: delayItem!)
+        } else {
+            if isControlVisible {
+                controlViewAnimation(isVisible: !isControlVisible)
+            }
+        }
+    }
+    
+    func controlViewAnimation(isVisible: Bool) {
+        let alpha: CGFloat = isVisible ? 1.0 : 0.0
+        self.isControlVisible = isVisible
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.controlsContainerView.alpha = alpha
+            self?.layoutIfNeeded()
+        } completion: { [weak self] _ in
+            self?.autoDisappearControlView()
+        }
     }
     
     func setupOrientationObserver() {
@@ -431,11 +521,23 @@ private extension PlayerView {
     
     @objc func onOrientationChanged() {
         if isFullScreen {
-            // portrait 전환
-            fullScreenButton.setImage(systemName: "arrow.up.left.and.arrow.down.right", size: 15)
-        } else {
             // landscape 전환
             fullScreenButton.setImage(systemName: "arrow.down.right.and.arrow.up.left", size: 15)
+
+            videoSlider.snp.remakeConstraints {
+                $0.leading.trailing.equalToSuperview().inset(5)
+                $0.bottom.equalToSuperview().inset(25)
+                $0.height.equalTo(30)
+            }
+        } else {
+            // portrait 전환
+            fullScreenButton.setImage(systemName: "arrow.up.left.and.arrow.down.right", size: 15)
+
+            videoSlider.snp.remakeConstraints {
+                $0.leading.trailing.equalToSuperview().inset(5)
+                $0.bottom.equalToSuperview()
+                $0.height.equalTo(30)
+            }
         }
     }
     
@@ -453,43 +555,12 @@ private extension PlayerView {
     }
     
     func configureAlertAction(with speedRate: SpeedRate) -> UIAlertAction {
-        var speed = SpeedRate.originalSpeed.rawValue
-        
-        switch speedRate {
-        case .speed05:
-            speed = SpeedRate.speed05.rawValue
-        case .speed075:
-            speed = SpeedRate.speed075.rawValue
-        case .originalSpeed:
-            speed = SpeedRate.originalSpeed.rawValue
-        case .speed15:
-            speed = SpeedRate.speed15.rawValue
-        case .speed2:
-            speed = SpeedRate.speed2.rawValue
-        }
-        
-        let title = "\(speed)x"
-
-        return UIAlertAction(title: title, style: .default) { [weak self] _ in
-            self?.player?.rate = speed
-            if self?.isPlaying == false {
-                self?.player?.pause()
+        return UIAlertAction(title: speedRate.title, style: .default) { [weak self] _ in
+            self?.currentSpeed = speedRate
+            if self?.isPlaying == true {
+                self?.player?.rate = speedRate.value
             }
         }
-    }
-}
-
-extension UIView {
-    var parentViewController: UIViewController? {
-        // Starts from next (As we know self is not a UIViewController).
-        var parentResponder: UIResponder? = self.next
-        while parentResponder != nil {
-            if let viewController = parentResponder as? UIViewController {
-                return viewController
-            }
-            parentResponder = parentResponder?.next
-        }
-        return nil
     }
 }
 
@@ -509,3 +580,5 @@ extension PlayerView: PlayerDelegate {
         }
     }
 }
+
+

@@ -12,7 +12,6 @@ import SnapKit
 final class PlayerVC: UIViewController {
     var player: AVPlayer?
     var pipController: AVPictureInPictureController?
-    var pipButton = UIButton()
     var playerView: PlayerView?
 
     override func viewDidLoad() {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08AA0AC42786ABAD0085CBBD /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AA0AC32786ABAD0085CBBD /* UIView.swift */; };
+		08AA0AC82786B4E10085CBBD /* SpeedRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AA0AC72786B4E10085CBBD /* SpeedRate.swift */; };
 		656498B82054FC396714133A /* Pods_VideoPlayerTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 674CDAEE2BB3325B9F1C96A2 /* Pods_VideoPlayerTest.framework */; };
 		6A1878B42782E4E200878175 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1878B32782E4E200878175 /* PlayerView.swift */; };
 		6A45482A275F407000C1EA95 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A454829275F407000C1EA95 /* AppDelegate.swift */; };
@@ -16,11 +18,12 @@
 		6A454836275F407200C1EA95 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A454834275F407200C1EA95 /* LaunchScreen.storyboard */; };
 		6AFB2F8E277D6E61006EC65D /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFB2F8D277D6E61006EC65D /* MainVC.swift */; };
 		6AFB2F90277D70B2006EC65D /* PlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFB2F8F277D70B2006EC65D /* PlayerVC.swift */; };
-		6AFB2F92277D7A6A006EC65D /* FWPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFB2F91277D7A6A006EC65D /* FWPlayerVC.swift */; };
 		6AFB2F96277D9DB8006EC65D /* UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFB2F95277D9DB8006EC65D /* UIButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		08AA0AC32786ABAD0085CBBD /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		08AA0AC72786B4E10085CBBD /* SpeedRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedRate.swift; sourceTree = "<group>"; };
 		3D3B96A5F7B5F2CA728B7CB5 /* Pods-VideoPlayerTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoPlayerTest.debug.xcconfig"; path = "Target Support Files/Pods-VideoPlayerTest/Pods-VideoPlayerTest.debug.xcconfig"; sourceTree = "<group>"; };
 		674CDAEE2BB3325B9F1C96A2 /* Pods_VideoPlayerTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VideoPlayerTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A1878B32782E4E200878175 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
@@ -33,7 +36,6 @@
 		6A454837275F407200C1EA95 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6AFB2F8D277D6E61006EC65D /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		6AFB2F8F277D70B2006EC65D /* PlayerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerVC.swift; sourceTree = "<group>"; };
-		6AFB2F91277D7A6A006EC65D /* FWPlayerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FWPlayerVC.swift; sourceTree = "<group>"; };
 		6AFB2F95277D9DB8006EC65D /* UIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButton.swift; sourceTree = "<group>"; };
 		E651490DA00770A5FECEBD1D /* Pods-VideoPlayerTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoPlayerTest.release.xcconfig"; path = "Target Support Files/Pods-VideoPlayerTest/Pods-VideoPlayerTest.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,6 +52,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		08AA0AC92786B5300085CBBD /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				08AA0AC32786ABAD0085CBBD /* UIView.swift */,
+				6AFB2F95277D9DB8006EC65D /* UIButton.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		2156FDB4260F59026097BAAE /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -86,11 +97,11 @@
 				6A454834275F407200C1EA95 /* LaunchScreen.storyboard */,
 				6A454837275F407200C1EA95 /* Info.plist */,
 				6AFB2F8D277D6E61006EC65D /* MainVC.swift */,
-				6AFB2F91277D7A6A006EC65D /* FWPlayerVC.swift */,
 				6AFB2F8F277D70B2006EC65D /* PlayerVC.swift */,
 				6A45482D275F407000C1EA95 /* BMPlayerVC.swift */,
 				6A1878B32782E4E200878175 /* PlayerView.swift */,
-				6AFB2F95277D9DB8006EC65D /* UIButton.swift */,
+				08AA0AC72786B4E10085CBBD /* SpeedRate.swift */,
+				08AA0AC92786B5300085CBBD /* Extensions */,
 			);
 			path = VideoPlayerTest;
 			sourceTree = "<group>";
@@ -218,11 +229,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A45482E275F407000C1EA95 /* BMPlayerVC.swift in Sources */,
+				08AA0AC82786B4E10085CBBD /* SpeedRate.swift in Sources */,
 				6AFB2F8E277D6E61006EC65D /* MainVC.swift in Sources */,
+				08AA0AC42786ABAD0085CBBD /* UIView.swift in Sources */,
 				6AFB2F96277D9DB8006EC65D /* UIButton.swift in Sources */,
 				6A45482A275F407000C1EA95 /* AppDelegate.swift in Sources */,
 				6A1878B42782E4E200878175 /* PlayerView.swift in Sources */,
-				6AFB2F92277D7A6A006EC65D /* FWPlayerVC.swift in Sources */,
 				6A45482C275F407000C1EA95 /* SceneDelegate.swift in Sources */,
 				6AFB2F90277D70B2006EC65D /* PlayerVC.swift in Sources */,
 			);
