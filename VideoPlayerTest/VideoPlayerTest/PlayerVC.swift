@@ -80,7 +80,6 @@ private extension PlayerVC {
         if let playerLayer = playerView?.playerLayer,
            AVPictureInPictureController.isPictureInPictureSupported() {
             pipController = AVPictureInPictureController(playerLayer: playerLayer)
-            pipController?.delegate = self
         } else {
             print("PIP isn't supproted by the current device.")
         }
@@ -88,6 +87,14 @@ private extension PlayerVC {
 }
 
 extension PlayerVC: AVPictureInPictureControllerDelegate {
+    func pictureInPictureControllerWillStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        print("PIP will start")
+    }
+    
+    func pictureInPictureControllerDidStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        print("PIP did started")
+    }
+    
     func pictureInPictureControllerWillStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
         print("PIP will stop")
         
@@ -96,11 +103,15 @@ extension PlayerVC: AVPictureInPictureControllerDelegate {
     func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
         print("PIP did stopped")
     }
+    
+    func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, failedToStartPictureInPictureWithError error: Error) {
+        
+        print("PIP did failed")
+    }
 }
 
 extension UIApplication {
 var statusBarUIView: UIView? {
-
     if #available(iOS 13.0, *) {
         let tag = 3848245
 
