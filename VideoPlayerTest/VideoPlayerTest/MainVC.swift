@@ -34,6 +34,9 @@ final class MainVC: UITableViewController {
                     let playerVC = PlayerVC(self?.videos[indexPath.row].sources.first ?? "")
                     self?.navigationController?.pushViewController(playerVC, animated: true)
                 }
+            } else {
+                let playerVC = PlayerVC(self.videos[indexPath.row].sources.first ?? "")
+                self.navigationController?.pushViewController(playerVC, animated: true)
             }
         } else {
             self.setupAlertView(with: "네트워크에 연결해주세요.")
