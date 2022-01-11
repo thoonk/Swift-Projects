@@ -33,4 +33,31 @@ extension UIView {
             layer.mask = mask
         }
     }
+    
+    func makeCircleWith(size: CGSize, backgroundColor: UIColor) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        let context = UIGraphicsGetCurrentContext()
+        context?.setFillColor(backgroundColor.cgColor)
+        context?.setStrokeColor(UIColor.clear.cgColor)
+        let bounds = CGRect(origin: .zero, size: size)
+        context?.addEllipse(in: bounds)
+        context?.drawPath(using: .fill)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
+    
+    func formatTime(_ time: Int) -> String {
+        let hours = time / 3600
+        let minutes = (time / 60) % 60
+        let seconds = time % 60
+        
+        let hourStr = String(format: "%02d", hours)
+        let minuteStr = String(format: "%02d", minutes)
+        let secondStr = String(format: "%02d", seconds)
+        
+        return hours > 0 ?
+        "\(hourStr):\(minuteStr):\(secondStr)" :
+        "\(minuteStr):\(secondStr)"
+    }
 }

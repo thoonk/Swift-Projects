@@ -34,7 +34,7 @@ enum SpeedRate {
         case .speed075:
             return "0.75x"
         case .originalSpeed:
-            return "1.0x (기본)"
+            return "1.0x"
         case .speed15:
             return "1.5x"
         case .speed2:

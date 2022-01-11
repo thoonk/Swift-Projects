@@ -11,7 +11,6 @@ import SnapKit
 
 final class PlayerVC: UIViewController {
     // MARK: - Properties
-    var player: AVPlayer?
     var pipController: AVPictureInPictureController?
     var playerView: PlayerView?
     
@@ -193,3 +192,5 @@ extension PlayerVC: UIViewControllerTransitioningDelegate {
         PresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
+
+
