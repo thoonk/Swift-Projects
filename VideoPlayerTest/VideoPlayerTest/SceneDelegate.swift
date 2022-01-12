@@ -11,6 +11,8 @@ import AVKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    private let screenProtector = ScreenProtector()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
@@ -22,6 +24,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
         AppDelegate.shared.window = window
+        
+        screenProtector.setupPreventingRecording()
+        screenProtector.setupPreventingCapturing()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}
