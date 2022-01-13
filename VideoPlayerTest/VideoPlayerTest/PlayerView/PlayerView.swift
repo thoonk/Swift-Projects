@@ -117,6 +117,8 @@ final class PlayerView: UIView {
                             controlViewAnimation(isVisible: true)
                         }
                     }
+                    // PIP모드에서 foreground로 돌아왔을 때 버튼 업데이트 처리
+                    delegate?.player(self, isPlayerPlaying: self.isPlaying)
                 }
             default:
                 break
