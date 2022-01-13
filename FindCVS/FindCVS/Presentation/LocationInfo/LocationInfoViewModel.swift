@@ -29,15 +29,47 @@ struct LocationInfoViewModel {
     let errorMessage: Signal<String>
     let detailListCellData: Driver<[DetailListCellData]>
     let scrollToSelecedLocation: Signal<Int>
-    let documentData = PublishSubject<[KLDocument?]>()
+    private let documentData = PublishSubject<[KLDocument]>()
     
-    init() {
+    
+    init(model: LocationInfoModel = LocationInfoModel()) {
+        // 네트워크 통신으로 데이터 불러오기
+        let cvsLocationDataResult = mapCenterPoint
+            .flatMapLatest(model.getLocation)
+            .share()
+        
+        let cvsLocationDataValue = cvsLocationDataResult
+            .compactMap { data -> LocationData? in
+                guard case let .success(value) = data else {
+                    return nil
+                }
+                return value
+            }
+        
+        let cvsLocationDataErrorMessage = cvsLocationDataResult
+            .compactMap { data -> String? in
+                switch data {
+                case let .success(data) where data.documents.isEmpty:
+                    return """
+                        500m 근처에 이용할 수 있는 편의점이 없습니다.
+                    """
+                case let .failure(error):
+                    return error.localizedDescription
+                default:
+                    return nil
+                }
+            }
+        
+        cvsLocationDataValue
+            .map { $0.documents }
+            .bind(to: documentData)
+            .disposed(by: bag)
+        
         // 지도 중심점 설정
         let selectedDetailListItem = detailListItemSelected
             .withLatestFrom(documentData) { $1[$0] }
             .map { data -> MTMapPoint in
-                guard let data = data,
-                      let longitude = Double(data.x),
+                guard let longitude = Double(data.x),
                       let latitude = Double(data.y) else {
                           return MTMapPoint()
                       }
@@ -59,10 +91,21 @@ struct LocationInfoViewModel {
         setMapCenter = currentMapCenter
             .asSignal(onErrorSignalWith: .empty())
         
-        errorMessage = mapViewError.asObservable()
+        errorMessage = Observable
+            .merge(
+            cvsLocationDataErrorMessage,
+            mapViewError.asObservable()
+            )
             .asSignal(onErrorJustReturn: "잠시 후 다시 시도해주세요.")
         
-        detailListCellData = Driver.just([])
+        detailListCellData = documentData
+            .map(model.documentToCellData(_:))
+            .asDriver(onErrorDriveWith: .empty())
+        
+        documentData
+            .map { !$0.isEmpty }
+            .bind(to: detailListBackgroundViewModel.shouldHideStatusLabel)
+            .disposed(by: bag)
         
         scrollToSelecedLocation = selectPOIItem
             .map { $0.tag }

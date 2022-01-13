@@ -144,11 +144,11 @@ extension LocationInfoViewController: CLLocationManagerDelegate {
 
 extension LocationInfoViewController: MTMapViewDelegate {
     func mapView(_ mapView: MTMapView!, updateCurrentLocation location: MTMapPoint!, withAccuracy accuracy: MTMapLocationAccuracy) {
-        #if DEBUG
-        viewModel.currentLocation.accept(MTMapPoint(geoCoord: MTMapPointGeo(latitude: 37.505818168, longitude: 126.753112053)))
-        #else
+//        #if DEBUG
+//        viewModel.currentLocation.accept(MTMapPoint(geoCoord: MTMapPointGeo(latitude: 37.505818168, longitude: 126.753112053)))
+//        #else
         viewModel.currentLocation.accept(location)
-        #endif
+//        #endif
     }
     
     func mapView(_ mapView: MTMapView!, finishedMapMoveAnimation mapCenterPoint: MTMapPoint!) {
@@ -206,7 +206,7 @@ extension Reactive where Base: LocationInfoViewController {
                     let mapPOIItem = MTMapPOIItem()
                     
                     mapPOIItem.mapPoint = point
-                    mapPOIItem.markerType = .redPin
+                    mapPOIItem.markerType = .bluePin
                     mapPOIItem.showAnimationType = .springFromGround
                     mapPOIItem.tag = offset
                     

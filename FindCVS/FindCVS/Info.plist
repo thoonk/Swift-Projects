@@ -4,6 +4,10 @@
 <dict>
 	<key>KAKAO_APP_KEY</key>
 	<string>AppKey</string>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>내 주변의 편의점 정보를 불러오려면 현재 위치가 필요합니다.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

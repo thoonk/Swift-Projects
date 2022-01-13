@@ -59,6 +59,9 @@
 		087FE570278F0ED700EB4CF6 /* DetailListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087FE56F278F0ED700EB4CF6 /* DetailListCell.swift */; };
 		087FE572278F10A000EB4CF6 /* DetailListBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087FE571278F10A000EB4CF6 /* DetailListBackgroundView.swift */; };
 		087FE574278F10DF00EB4CF6 /* DetailListBackgroundViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087FE573278F10DF00EB4CF6 /* DetailListBackgroundViewModel.swift */; };
+		08E95042279057280085062C /* LocalAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E95041279057280085062C /* LocalAPI.swift */; };
+		08E95044279058110085062C /* LocalNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E95043279058110085062C /* LocalNetwork.swift */; };
+		08E9504727905AA80085062C /* LocationInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E9504627905AA80085062C /* LocationInfoModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -121,6 +124,9 @@
 		087FE56F278F0ED700EB4CF6 /* DetailListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailListCell.swift; sourceTree = "<group>"; };
 		087FE571278F10A000EB4CF6 /* DetailListBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailListBackgroundView.swift; sourceTree = "<group>"; };
 		087FE573278F10DF00EB4CF6 /* DetailListBackgroundViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailListBackgroundViewModel.swift; sourceTree = "<group>"; };
+		08E95041279057280085062C /* LocalAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAPI.swift; sourceTree = "<group>"; };
+		08E95043279058110085062C /* LocalNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNetwork.swift; sourceTree = "<group>"; };
+		08E9504627905AA80085062C /* LocationInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInfoModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +179,7 @@
 				087FE4F8278EFD7900EB4CF6 /* Info.plist */,
 				087FE500278EFF0600EB4CF6 /* BridgingHeader.h */,
 				087FE555278F00D300EB4CF6 /* Entity */,
+				08E950452790581F0085062C /* Network */,
 				087FE56E278F080D00EB4CF6 /* Presentation */,
 			);
 			path = FindCVS;
@@ -269,10 +276,28 @@
 				087FE56F278F0ED700EB4CF6 /* DetailListCell.swift */,
 				087FE571278F10A000EB4CF6 /* DetailListBackgroundView.swift */,
 				087FE573278F10DF00EB4CF6 /* DetailListBackgroundViewModel.swift */,
-				087FE55A278F030700EB4CF6 /* LocationInfoViewController.swift */,
-				087FE55C278F034E00EB4CF6 /* LocationInfoViewModel.swift */,
+				08E9504827905AB40085062C /* LocationInfo */,
 			);
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		08E950452790581F0085062C /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				08E95041279057280085062C /* LocalAPI.swift */,
+				08E95043279058110085062C /* LocalNetwork.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		08E9504827905AB40085062C /* LocationInfo */ = {
+			isa = PBXGroup;
+			children = (
+				087FE55A278F030700EB4CF6 /* LocationInfoViewController.swift */,
+				087FE55C278F034E00EB4CF6 /* LocationInfoViewModel.swift */,
+				08E9504627905AA80085062C /* LocationInfoModel.swift */,
+			);
+			path = LocationInfo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -386,10 +411,13 @@
 				087FE572278F10A000EB4CF6 /* DetailListBackgroundView.swift in Sources */,
 				087FE574278F10DF00EB4CF6 /* DetailListBackgroundViewModel.swift in Sources */,
 				087FE557278F010400EB4CF6 /* KLDocument.swift in Sources */,
+				08E95044279058110085062C /* LocalNetwork.swift in Sources */,
 				087FE55B278F030700EB4CF6 /* LocationInfoViewController.swift in Sources */,
 				087FE56D278F07FB00EB4CF6 /* MTMapViewError.swift in Sources */,
+				08E95042279057280085062C /* LocalAPI.swift in Sources */,
 				087FE570278F0ED700EB4CF6 /* DetailListCell.swift in Sources */,
 				087FE4EB278EFD7600EB4CF6 /* AppDelegate.swift in Sources */,
+				08E9504727905AA80085062C /* LocationInfoModel.swift in Sources */,
 				087FE55D278F034E00EB4CF6 /* LocationInfoViewModel.swift in Sources */,
 				087FE559278F026A00EB4CF6 /* DetailListCellData.swift in Sources */,
 				087FE4ED278EFD7600EB4CF6 /* SceneDelegate.swift in Sources */,

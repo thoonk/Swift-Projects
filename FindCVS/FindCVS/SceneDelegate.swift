@@ -18,6 +18,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let rootVC = LocationInfoViewController()
         
         window?.rootViewController = UINavigationController(rootViewController: rootVC)
+        
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
