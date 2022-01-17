@@ -7,7 +7,7 @@
 
 import RxSwift
 
-final class LocalNetwork {
+class LocalNetwork {
     private let session: URLSession
     let api = LocalAPI()
     
