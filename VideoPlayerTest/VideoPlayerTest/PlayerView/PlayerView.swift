@@ -69,7 +69,6 @@ final class PlayerView: UIView {
         controlView.delegate = self
         controlView.playerView = self
         
-        setupGradientLayer()
         setupLayout()
         setupTapGesture()
         autoDisappearControlView()
@@ -175,14 +174,6 @@ private extension PlayerView {
         }
     }
     
-    func setupGradientLayer() {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = bounds
-        gradientLayer.colors = [UIColor.clear, UIColor.black]
-        gradientLayer.locations = [0.7, 1.2]
-//        controlsContainerView.layer.addSublayer(gradientLayer)
-    }
-    
     func setupTapGesture() {
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapGestureTapped(_:)))
         addGestureRecognizer(tapGesture)
@@ -217,7 +208,7 @@ private extension PlayerView {
             self.isControlVisible = isVisible
             
             UIView.animate(withDuration: 0.3) { [weak self] in
-                self?.controlView.alpha = alpha
+                self?.controlView.containerView.alpha = alpha
                 self?.layoutIfNeeded()
             } completion: { [weak self] _ in
                 self?.autoDisappearControlView()

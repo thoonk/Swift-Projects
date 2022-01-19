@@ -41,7 +41,17 @@ final class PlayerControlView: UIView {
         }
     }
     
+    var isSubtitleVisible = false
+    
+    var subtitles: Subtitles?
+    
     // MARK: - UI Components
+    lazy var containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0, alpha: 0.4)
+        return view
+    }()
+    
     lazy var activityIndicatorView: UIActivityIndicatorView = {
         let aiv = UIActivityIndicatorView(style: .large)
         aiv.startAnimating()
@@ -115,6 +125,14 @@ final class PlayerControlView: UIView {
         return button
     }()
     
+    lazy var subtitleButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "subtitles"), for: .normal)
+        button.addTarget(self, action: #selector(handleSubtitle), for: .touchUpInside)
+        
+        return button
+    }()
+    
     lazy var replayButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "replay"), for: .normal)
@@ -164,6 +182,27 @@ final class PlayerControlView: UIView {
         return label
     }()
     
+    lazy var subtitleLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textAlignment = .center
+        label.sizeToFit()
+        return label
+    }()
+    
+    lazy var subtitleBackView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 2
+        view.backgroundColor = .black.withAlphaComponent(0.4)
+        view.addSubview(subtitleLabel)
+        view.isHidden = true
+        return view
+    }()
+    
     lazy var videoSlider: UISlider = {
         let slider = UISlider()
         slider.minimumTrackTintColor = .white
@@ -183,6 +222,8 @@ final class PlayerControlView: UIView {
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        self.subtitles = Subtitles()
         
         setupLayout()
         setupOrientationObserver()
@@ -206,7 +247,7 @@ final class PlayerControlView: UIView {
 // MARK: - Private Methods
 private extension PlayerControlView {
     func setupLayout() {
-        self.backgroundColor = UIColor(white: 0, alpha: 0.4)
+//        self.backgroundColor = UIColor(white: 0, alpha: 0.4)
         
         let videoTimeStackView = UIStackView(arrangedSubviews: [currentTimeLabel, separotorLabel, videoLengthLabel])
         videoTimeStackView.alignment = .fill
@@ -227,9 +268,20 @@ private extension PlayerControlView {
             speedButton,
             menuButton,
             backButton,
-            replayButton
+            replayButton,
+            subtitleButton
+        ]
+            .forEach { containerView.addSubview($0) }
+        
+        [
+            containerView,
+            subtitleBackView
         ]
             .forEach { self.addSubview($0) }
+        
+        containerView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
         
         activityIndicatorView.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
@@ -285,10 +337,30 @@ private extension PlayerControlView {
             $0.top.leading.equalToSuperview().inset(10)
             $0.width.height.equalTo(25)
         }
+        
+        subtitleButton.snp.makeConstraints {
+            $0.top.equalTo(menuButton)
+            $0.trailing.equalTo(speedButton.snp.leading).offset(-10)
+            $0.width.height.equalTo(30)
+        }
+        
+        subtitleLabel.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(5)
+        }
+        
+        subtitleBackView.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(5)
+            $0.centerX.equalToSuperview()
+            $0.width.greaterThanOrEqualTo(10)
+        }
     }
     
     @objc func handleButtonTapped(_ button: UIButton) {
         delegate?.controlView(self, didButtonTapped: button)
+    }
+    
+    @objc func handleSubtitle() {
+        self.isSubtitleVisible = !isSubtitleVisible
     }
     
     func setupOrientationObserver() {
@@ -355,6 +427,19 @@ extension PlayerControlView: PlayerDelegate {
         self.videoLengthLabel.text = formatTime(Int(totalTime))
         self.videoSlider.value = Float(currentTime / totalTime)
 
+        if let subtitles = subtitles,
+            isSubtitleVisible == true
+        {
+            if let line = subtitles.search(for: currentTime) {
+                subtitleBackView.isHidden = false
+                subtitleLabel.text = line.text
+            } else {
+                subtitleBackView.isHidden = true
+            }
+        } else {
+            subtitleBackView.isHidden = true
+        }
+        
         // PlayToTheEnd
         if currentTime >= totalTime {
             replayButton.isHidden = false
