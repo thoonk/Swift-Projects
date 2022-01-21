@@ -13,12 +13,26 @@ class MenuView: UIViewController {
     var hasSetPointOrigin = false
     var pointOrigin: CGPoint?
     
+    let menu = [
+        "재생속도",
+        "자막",
+        "화면 잠금"
+    ]
+    
     lazy var slideIndicator: UIView = {
         let view = UIView()
         view.backgroundColor = .lightGray
         view.roundCorners(.allCorners, radius: 3)
 
         return view
+    }()
+    
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        return tableView
     }()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -42,10 +56,8 @@ class MenuView: UIViewController {
     @objc func panGestureRecognizerAction(sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: view)
         
-        // Not allowing the user to drag the view upward
         guard translation.y >= 0 else { return }
         
-        // setting x as 0 because we don't want users to move the frame side ways!! Only want straight up or down
         view.frame.origin = CGPoint(x: 0, y: self.pointOrigin!.y + translation.y)
         
         if sender.state == .ended {
@@ -65,7 +77,11 @@ class MenuView: UIViewController {
 private extension MenuView {
     func setupLayout() {
         view.backgroundColor = .white
-        view.addSubview(slideIndicator)
+        
+        [
+            slideIndicator,
+            tableView
+        ].forEach { view.addSubview($0) }
         
         slideIndicator.snp.makeConstraints {
             $0.top.equalToSuperview().inset(8)
@@ -73,10 +89,35 @@ private extension MenuView {
             $0.width.equalTo(60)
             $0.height.equalTo(4)
         }
+        
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(slideIndicator.snp.bottom).offset(5)
+            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
     }
     
     func setupGesture() {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGestureRecognizerAction))
         view.addGestureRecognizer(panGesture)
+    }
+}
+
+extension MenuView: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        menu.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+        
+        cell.textLabel?.text = self.menu[indexPath.row]
+        return cell
+    }
+}
+
+extension MenuView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 class Subtitles {
     var lines = [Line]()
 
-    struct Line: CustomStringConvertible {
+    struct Line {
         var index: Int
         var start: TimeInterval
         var end: TimeInterval
@@ -37,10 +37,6 @@ class Subtitles {
             let msec: TimeInterval = Double(splittedSec[1]) ?? 0
 
             return (hour * 3600) + (min * 60) + sec + (msec / 1000)
-        }
-
-        var description: String {
-            return "Subtitle Line \nindex: \(index), \nstart: \(start)\nend: \(end)\ntext: \(text)"
         }
     }
     // _ url: URL,

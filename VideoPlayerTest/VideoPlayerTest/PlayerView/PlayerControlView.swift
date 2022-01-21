@@ -21,6 +21,7 @@ enum ButtonType: Int {
     case speed = 105
     case replay = 106
     case menu = 107
+    case lock = 108
 }
 
 final class PlayerControlView: UIView {
@@ -105,7 +106,7 @@ final class PlayerControlView: UIView {
 
     lazy var fullScreenButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(systemName: "arrow.up.left.an d.arrow.down.right", size: 18)
+        button.setImage(systemName: "arrow.up.left.an d.arrow.down.right", size: 20)
         button.tintColor = .white
         button.backgroundColor = .clear
         button.tag = ButtonType.fullScreen.rawValue
@@ -128,6 +129,7 @@ final class PlayerControlView: UIView {
     lazy var subtitleButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "subtitles"), for: .normal)
+        button.tintColor = .white
         button.addTarget(self, action: #selector(handleSubtitle), for: .touchUpInside)
         
         return button
@@ -148,6 +150,15 @@ final class PlayerControlView: UIView {
         button.setImage(systemName: "applelogo", size: 18)
         button.tintColor = .white
         button.tag = ButtonType.menu.rawValue
+        button.addTarget(self, action: #selector(handleButtonTapped(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var lockButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(systemName: "lock.open.fill", size: 18)
+        button.tintColor = .white
+        button.tag = ButtonType.lock.rawValue
         button.addTarget(self, action: #selector(handleButtonTapped(_:)), for: .touchUpInside)
         return button
     }()
@@ -269,7 +280,8 @@ private extension PlayerControlView {
             menuButton,
             backButton,
             replayButton,
-            subtitleButton
+            subtitleButton,
+            lockButton
         ]
             .forEach { containerView.addSubview($0) }
         
@@ -335,12 +347,18 @@ private extension PlayerControlView {
         
         backButton.snp.makeConstraints {
             $0.top.leading.equalToSuperview().inset(10)
-            $0.width.height.equalTo(25)
+            $0.width.height.equalTo(30)
         }
         
         subtitleButton.snp.makeConstraints {
             $0.top.equalTo(menuButton)
             $0.trailing.equalTo(speedButton.snp.leading).offset(-10)
+            $0.width.height.equalTo(30)
+        }
+        
+        lockButton.snp.makeConstraints {
+            $0.top.equalTo(menuButton)
+            $0.trailing.equalTo(subtitleButton.snp.leading).offset(-10)
             $0.width.height.equalTo(30)
         }
         
@@ -458,5 +476,26 @@ extension PlayerControlView: PlayerDelegate {
     
     func player(_ playerView: PlayerView, didChangePlayBackRate rate: SpeedRate) {
         speedButton.setTitle(rate.title, for: .normal)
+    }
+    
+    func player(_ playerView: PlayerView, didLockScreen isLockScreen: Bool) {
+        if isLockScreen {
+            self.lockButton.setImage(systemName: "lock.fill", size: 18)
+        } else {
+            self.lockButton.setImage(systemName: "lock.open.fill", size: 18)
+        }
+        
+        [
+         backwardButton,
+         pausePlayButton,
+         forwardButton,
+         videoSlider,
+         fullScreenButton,
+         speedButton,
+         menuButton,
+         backButton,
+         subtitleButton,
+        ]
+            .forEach { $0.isUserInteractionEnabled = !isLockScreen }
     }
 }

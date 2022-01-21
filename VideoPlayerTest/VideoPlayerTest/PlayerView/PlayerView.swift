@@ -11,11 +11,11 @@ import AVKit
 import SnapKit
 
 protocol PlayerDelegate: AnyObject {
-//    func player(_ playerView: PlayerView, didPlayerStarted state: PlayerState)
     func player(_ playerView: PlayerView, didLoadedTimeChanged duration: TimeInterval)
     func player(_ playerView: PlayerView, didPlayTimeChanged currentTime: TimeInterval, totalTime: TimeInterval)
     func player(_ playerView: PlayerView, isPlayerPlaying isPlaying: Bool)
     func player(_ playerView: PlayerView, didChangePlayBackRate rate: SpeedRate)
+    func player(_ playerView: PlayerView, didLockScreen isLockScreen: Bool)
 }
 
 //enum PlayerState {
@@ -59,6 +59,8 @@ final class PlayerView: UIView {
     var isControlVisible = true
     var isPlayToTheEnd = false
     var tapGesture: UITapGestureRecognizer!
+    
+    var isLockScreen = false
     
     // MARK: - init
     required init(_ urlString: String) {
@@ -318,6 +320,19 @@ extension PlayerView: PlayerControlViewDelegate {
                     menuView.transitioningDelegate = vc
                     vc.present(menuView, animated: true)
                 }
+                
+            case .lock:
+                self.isLockScreen = !isLockScreen
+                
+                if isLockScreen {
+                    if let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation {
+                        AppUtility.lock(with: interfaceOrientation)
+                    }
+                } else {
+                    AppUtility.lock(with: .unknown)
+                }
+                
+                delegate?.player(self, didLockScreen: isLockScreen)
             }
         }
     }
