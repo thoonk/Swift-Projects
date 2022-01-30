@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Movie: Decodable {
+struct Movie: Codable {
     let title: String
     private let image: String
     let pubDate: String
@@ -15,7 +15,31 @@ struct Movie: Decodable {
     let actor: String
     let userRating: String
     
+    var isLiked: Bool
     var imageURL: URL? { URL(string: image) }
+    
+    private enum CodingKeys: String, CodingKey {
+        case title, image, pubDate, director, actor, userRating
+        
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        title = try container.decodeIfPresent(String.self, forKey: .title) ?? "-"
+        
+        image = try container.decodeIfPresent(String.self, forKey: .image) ?? "-"
+        
+        pubDate = try container.decodeIfPresent(String.self, forKey: .pubDate) ?? "-"
+
+        director = try container.decodeIfPresent(String.self, forKey: .director) ?? "-"
+
+        actor = try container.decodeIfPresent(String.self, forKey: .actor) ?? "-"
+        
+        userRating = try container.decodeIfPresent(String.self, forKey: .userRating) ?? "-"
+        
+        isLiked = false
+    }
     
     init(
         title: String,
@@ -23,7 +47,8 @@ struct Movie: Decodable {
         pubDate: String,
         director: String,
         actor: String,
-        userRating: String
+        userRating: String,
+        isLiked: Bool = false
     ) {
         self.title = title
         self.image = imageURL
@@ -31,5 +56,6 @@ struct Movie: Decodable {
         self.director = director
         self.actor = actor
         self.userRating = userRating
+        self.isLiked = isLiked
     }
 }

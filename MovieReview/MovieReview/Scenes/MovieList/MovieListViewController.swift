@@ -42,6 +42,12 @@ final class MovieListViewController: UIViewController {
         
         presenter.viewDidLoad()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        presenter.viewWillAppear()
+    }
 }
 
 extension MovieListViewController: MovieListProtocol {
@@ -81,5 +87,9 @@ extension MovieListViewController: MovieListProtocol {
     func pushToMovieDetailViewController(with movie: Movie) {
         let movieDetailVC = MovieDetailViewController(movie: movie)
         navigationController?.pushViewController(movieDetailVC, animated: true)
+    }
+    
+    func updateCollectionView() {
+        collectionView.reloadData()
     }
 }

@@ -10,4 +10,3 @@ import Foundation
 struct MovieSearchResponseModel: Decodable {
     var items: [Movie]
 }
-
