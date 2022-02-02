@@ -95,7 +95,7 @@ extension MovieDetailViewController: MovieDetailProtocol {
             imageView.kf.setImage(with: imageURL)
         }
     }
-    
+      
     func setRightBarButton(with isLiked: Bool) {
         let imageName = isLiked ? "star.fill" : "star"
         rightBarButtonItem.image = UIImage(systemName: imageName)

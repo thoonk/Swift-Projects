@@ -50,4 +50,30 @@ class MovieReviewUITests: XCTestCase {
         
         XCTAssertTrue(existCancelButton)
     }
+    
+    // MARK: - BDD
+    enum CellData: String {
+        case existMovie = "<b>점퍼</b>"
+        case notExistsMovie = "007"
+    }
+    
+    func testIfFavoritesTrue() {
+        let existsCell = app.collectionViews
+            .cells
+            .containing(.staticText, identifier: CellData.existMovie.rawValue)
+            .element
+            .exists
+        
+        XCTAssertTrue(existsCell, "Title이 표시된 Cell이 존재함.")
+    }
+    
+    func testIfFavoritesFalse() {
+        let existsCell = app.collectionViews
+            .cells
+            .containing(.staticText, identifier: CellData.notExistsMovie.rawValue)
+            .element
+            .exists
+        
+        XCTAssertFalse(existsCell, "Title이 표시된 Cell이 존재하지 않음.")
+    }
 }

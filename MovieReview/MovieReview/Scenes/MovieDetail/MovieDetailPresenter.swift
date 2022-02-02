@@ -18,7 +18,7 @@ final class MovieDetailPresenter: NSObject {
     private var movie: Movie
     
     init(
-        viewController: MovieDetailViewController,
+        viewController: MovieDetailProtocol,
         movie: Movie,
         userDefaultsManager: UserDefaultsManagerProtocol = UserDefaultsManager()
     ) {
