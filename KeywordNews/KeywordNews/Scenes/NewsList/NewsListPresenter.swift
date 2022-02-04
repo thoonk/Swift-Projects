@@ -44,10 +44,14 @@ extension NewsListPresenter: UITableViewDataSource {
         
         return cell
     }
-}
-
-extension NewsListPresenter: UITableViewDelegate {
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: NewsListTableViewHeaderView.identifier) as? NewsListTableViewHeaderView
+        
+        header?.configure()
+        
+        return header
+    }
 }
 
-
+extension NewsListPresenter: UITableViewDelegate {}

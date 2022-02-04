@@ -29,6 +29,11 @@ final class NewsListViewController: UIViewController {
         tableView.delegate = presenter
         
         tableView.register(
+            NewsListTableViewHeaderView.self,
+            forHeaderFooterViewReuseIdentifier: NewsListTableViewHeaderView.identifier
+        )
+        
+        tableView.register(
             NewsListTableViewCell.self,
             forCellReuseIdentifier: NewsListTableViewCell.identifier
         )
