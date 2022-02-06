@@ -11,6 +11,7 @@ protocol NewsListProtocol: AnyObject {
     func setupNavigationBar()
     func setupLayout()
     func endRefreshing()
+    func moveToNewsWebViewController()
 }
 
 final class NewsListPresenter: NSObject {
@@ -54,4 +55,9 @@ extension NewsListPresenter: UITableViewDataSource {
     }
 }
 
-extension NewsListPresenter: UITableViewDelegate {}
+extension NewsListPresenter: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        viewController?.moveToNewsWebViewController()
+    }
+}
