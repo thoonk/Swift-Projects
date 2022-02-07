@@ -60,4 +60,12 @@ extension UIView {
         "\(hourStr):\(minuteStr):\(secondStr)" :
         "\(minuteStr):\(secondStr)"
     }
+    
+    func formatTimeForDesc(with time: Int) -> String {
+        let hours = String(format: "%02d", time / 3600)
+        let minutes = String(format: "%02d", (time / 60) % 60)
+        let seconds = String(format: "%02d", time % 60)
+        
+        return "\(hours):\(minutes):\(seconds)"
+    }
 }

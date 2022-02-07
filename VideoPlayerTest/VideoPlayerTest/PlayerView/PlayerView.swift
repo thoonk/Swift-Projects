@@ -2,7 +2,7 @@
 //  PlayerView.swift
 //  VideoPlayerTest
 //
-//  Created by MA2103 on 2022/01/03.
+//  Created by thoonk on 2022/01/03.
 //
 
 import UIKit
@@ -228,8 +228,11 @@ private extension PlayerView {
             }
         }
     }
+    
+    
 }
 
+// MARK: - PlayerControlViewDelegate
 extension PlayerView: PlayerControlViewDelegate {
     func controlView(_ controlView: PlayerControlView, didButtonTapped button: UIButton) {
         if let type = ButtonType(rawValue: button.tag) {
@@ -348,4 +351,9 @@ extension PlayerView: PlayerControlViewDelegate {
             }
         }
     }
+    
+    func controlView(_ controlView: PlayerControlView, seekTo time: CMTime) {
+        self.player?.seek(to: time)
+    }
 }
+

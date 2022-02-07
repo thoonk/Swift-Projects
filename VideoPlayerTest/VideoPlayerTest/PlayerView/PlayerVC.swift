@@ -2,7 +2,7 @@
 //  PlayerVC.swift
 //  VideoPlayerTest
 //
-//  Created by MA2103 on 2021/12/30.
+//  Created by thoonk on 2021/12/30.
 //
 
 import UIKit
@@ -38,6 +38,10 @@ final class PlayerVC: UIViewController {
         didSet {
             setNeedsStatusBarAppearanceUpdate()
         }
+    }
+    
+    override var shouldAutorotate: Bool {
+        return true
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -106,13 +110,15 @@ private extension PlayerVC {
         
         if UIDevice.current.orientation.isLandscape {
             view.backgroundColor = .black
+            
+            tableView.removeFromSuperview()
             videoPlayerView.snp.remakeConstraints {
                 $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
                 $0.top.bottom.equalToSuperview()
             }
             
-            tableView.snp.removeConstraints()
-            tableView.isHidden = true
+//            tableView.snp.removeConstraints()
+//            tableView.isHidden = true
         } else {
             view.backgroundColor = .systemBackground
             videoPlayerView.snp.remakeConstraints {
@@ -121,7 +127,7 @@ private extension PlayerVC {
                 $0.height.equalTo(videoPlayerView.snp.width).multipliedBy(9.0/16.0).priority(750)
             }
             
-            tableView.isHidden = false
+//            tableView.isHidden = false
             tableView.snp.makeConstraints {
                 $0.top.equalTo(videoPlayerView.snp.bottom).offset(10)
                 $0.leading.trailing.bottom.equalToSuperview()
@@ -192,5 +198,3 @@ extension PlayerVC: UIViewControllerTransitioningDelegate {
         PresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
-
-

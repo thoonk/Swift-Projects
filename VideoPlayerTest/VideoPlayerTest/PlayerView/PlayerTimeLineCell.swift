@@ -2,7 +2,7 @@
 //  PlayerTimeLineCell.swift
 //  VideoPlayerTest
 //
-//  Created by MA2103 on 2022/01/10.
+//  Created by thoonk on 2022/01/10.
 //
 
 import UIKit
@@ -75,13 +75,5 @@ private extension PlayerTimeLineCell {
             $0.leading.equalTo(titleLabel)
             $0.top.equalTo(titleLabel.snp.bottom).offset(7)
         }
-    }
-    
-    func formatTimeForDesc(with time: Int) -> String {
-        let hours = String(format: "%02d", time / 3600)
-        let minutes = String(format: "%02d", (time / 60) % 60)
-        let seconds = String(format: "%02d", time % 60)
-        
-        return "\(hours):\(minutes):\(seconds)"
     }
 }

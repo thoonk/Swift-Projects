@@ -2,14 +2,16 @@
 //  PlayerControlView.swift
 //  VideoPlayerTest
 //
-//  Created by MA2103 on 2022/01/03.
+//  Created by thoonk on 2022/01/03.
 //
 
 import UIKit
+import CoreMedia
 
 protocol PlayerControlViewDelegate: AnyObject {
     func controlView(_ controlView: PlayerControlView, didButtonTapped button: UIButton)
     func controlView(_ controlView: PlayerControlView, slider: UISlider, onSliderEvent event: UIControl.Event)
+    func controlView(_ controlView: PlayerControlView, seekTo time: CMTime)
 }
 
 enum ButtonType: Int {
@@ -34,6 +36,8 @@ final class PlayerControlView: UIView {
         }
     }
     weak var delegate: PlayerControlViewDelegate?
+    
+    var timeLineWindow: UIWindow?
     
     var isFullScreen: Bool {
         get {
@@ -214,6 +218,25 @@ final class PlayerControlView: UIView {
         return view
     }()
     
+    lazy var timeLineLabel: UILabel = {
+        let label = UILabel()
+        label.text = "타임라인 보기 ⬆"
+        label.numberOfLines = 1
+        label.adjustsFontSizeToFitWidth = true
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 13)
+        label.sizeToFit()
+        label.isHidden = true
+        return label
+    }()
+    
+//    lazy var timeLineView: TimeLineView = {
+//        let view = TimeLineView(frame: UIScreen.main.bounds)
+//        view.backgroundColor = .clear
+//        view.delegate = self
+//        return view
+//    }()
+    
     lazy var videoSlider: UISlider = {
         let slider = UISlider()
         slider.minimumTrackTintColor = .white
@@ -238,6 +261,7 @@ final class PlayerControlView: UIView {
         
         setupLayout()
         setupOrientationObserver()
+        setupSwipeGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -255,11 +279,101 @@ final class PlayerControlView: UIView {
     }
 }
 
+// MARK: - PlayerDelegate
+extension PlayerControlView: PlayerDelegate {
+//    func player(_ playerView: PlayerView, didPlayerStarted state: PlayerState) {
+//        switch state {
+//
+//        default:
+//            //
+//            break
+//        }
+//    }
+    
+    /// 영상 로딩 완료 후 처리
+    func player(_ playerView: PlayerView, didLoadedTimeChanged duration: TimeInterval) {
+        activityIndicatorView.stopAnimating()
+        [pausePlayButton, backwardButton, forwardButton]
+            .forEach { $0.isHidden = false }
+        
+        guard !(duration.isNaN || duration.isInfinite) else { return }
+        
+        let secondsText = Int(duration.truncatingRemainder(dividingBy: 60))
+        let minutesText = String(format: "%02d", Int(duration) / 60)
+        videoLengthLabel.text = "\(minutesText):\(secondsText)"
+    }
+    
+    /// Player 시간 흐름에 따른 뷰 업데이트
+    func player(_ playerView: PlayerView, didPlayTimeChanged currentTime: TimeInterval, totalTime: TimeInterval) {
+        guard !(totalTime.isNaN || totalTime.isInfinite) else {
+            return
+        }
+        self.currentTimeLabel.text = formatTime(Int(currentTime))
+        self.videoLengthLabel.text = formatTime(Int(totalTime))
+        self.videoSlider.value = Float(currentTime / totalTime)
+
+        if let subtitles = subtitles,
+            isSubtitleVisible == true
+        {
+            if let line = subtitles.search(for: currentTime) {
+                subtitleBackView.isHidden = false
+                subtitleLabel.text = line.text
+            } else {
+                subtitleBackView.isHidden = true
+            }
+        } else {
+            subtitleBackView.isHidden = true
+        }
+        
+        var isPlayToTheEnd = false
+        
+        // PlayToTheEnd
+        if currentTime >= totalTime {
+            isPlayToTheEnd = true
+        }
+        
+        replayButton.isHidden = !isPlayToTheEnd
+        [pausePlayButton, backwardButton, forwardButton]
+            .forEach { $0.isHidden = isPlayToTheEnd }
+    }
+    
+    func player(_ playerView: PlayerView, isPlayerPlaying isPlaying: Bool) {
+        if isPlaying {
+            self.pausePlayButton.setImage(systemName: "pause", size: 30)
+        } else {
+            self.pausePlayButton.setImage(systemName: "play", size: 30)
+        }
+    }
+    
+    func player(_ playerView: PlayerView, didChangePlayBackRate rate: SpeedRate) {
+        speedButton.setTitle(rate.title, for: .normal)
+    }
+    
+    func player(_ playerView: PlayerView, didLockScreen isLockScreen: Bool) {
+        if isLockScreen {
+            self.lockButton.setImage(systemName: "lock.fill", size: 18)
+        } else {
+            self.lockButton.setImage(systemName: "lock.open.fill", size: 18)
+        }
+        
+        [
+         backwardButton,
+         pausePlayButton,
+         forwardButton,
+         videoSlider,
+         fullScreenButton,
+         speedButton,
+         menuButton,
+         backButton,
+         subtitleButton,
+        ]
+            .forEach { $0.isUserInteractionEnabled = !isLockScreen }
+    }
+}
+
 // MARK: - Private Methods
 private extension PlayerControlView {
     func setupLayout() {
-//        self.backgroundColor = UIColor(white: 0, alpha: 0.4)
-        
         let videoTimeStackView = UIStackView(arrangedSubviews: [currentTimeLabel, separotorLabel, videoLengthLabel])
         videoTimeStackView.alignment = .fill
         videoTimeStackView.distribution = .fillProportionally
@@ -281,7 +395,8 @@ private extension PlayerControlView {
             backButton,
             replayButton,
             subtitleButton,
-            lockButton
+            lockButton,
+            timeLineLabel
         ]
             .forEach { containerView.addSubview($0) }
         
@@ -310,7 +425,7 @@ private extension PlayerControlView {
         
         videoSlider.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(5)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(5)
             $0.height.equalTo(30)
         }
         
@@ -400,6 +515,13 @@ private extension PlayerControlView {
                 $0.bottom.equalToSuperview().inset(25)
                 $0.height.equalTo(30)
             }
+            
+            timeLineLabel.snp.makeConstraints {
+                $0.leading.trailing.equalToSuperview().inset(30)
+                $0.top.equalTo(videoSlider.snp.bottom)
+                $0.bottom.equalToSuperview()
+            }
+            timeLineLabel.isHidden = false
         } else {
             // portrait 전환
             fullScreenButton.setImage(systemName: "arrow.up.left.and.arrow.down.right", size: 15)
@@ -409,93 +531,88 @@ private extension PlayerControlView {
                 $0.bottom.equalToSuperview()
                 $0.height.equalTo(30)
             }
+            
+            timeLineLabel.snp.removeConstraints()
+            timeLineLabel.isHidden = true
+            
+            didCloseButtonTapped()
         }
+    }
+    
+    func setupSwipeGesture() {
+        let swipeGesutre = UISwipeGestureRecognizer(target: self, action: #selector(swipeGestureAction))
+        swipeGesutre.direction = .up
+        self.addGestureRecognizer(swipeGesutre)
+    }
+    
+    @objc
+    func swipeGestureAction() {
+        // timeLine Mask View
+        
+        if isFullScreen {
+            setupTimeLineWindow()
+        }
+    }
+    
+    func setupTimeLineWindow() {
+        
+//        containerView.addSubview(timeLineView)
+//
+//        timeLineView.snp.makeConstraints {
+//            $0.edges.equalToSuperview()
+//        }
+        didCloseButtonTapped()
+        print(UIScreen.main.bounds)
+        let screenSize = UIScreen.main.bounds
+        let widthToUse: CGFloat = (screenSize.width > screenSize.height) ? screenSize.width : screenSize.height
+        let heightToUse: CGFloat = (widthToUse == screenSize.width) ? screenSize.height : screenSize.width
+
+        let frame = CGRect(x: 0, y: 0, width: widthToUse, height: heightToUse)
+        var timeLineWindow = UIWindow(frame: frame)
+        let windowScene = UIApplication.shared.connectedScenes.first {
+            $0.activationState == .foregroundActive
+        }
+
+        if let windowScene = windowScene as? UIWindowScene {
+            timeLineWindow = UIWindow(windowScene: windowScene)
+        }
+
+        timeLineWindow.frame = frame
+        timeLineWindow.backgroundColor = .clear
+        timeLineWindow.windowLevel = UIWindow.Level.statusBar + 1
+
+
+        let newTransform = CGAffineTransform(rotationAngle: -Double.pi / 2)
+
+        timeLineWindow.transform = newTransform
+
+        timeLineWindow.frame.origin.x = 0
+        timeLineWindow.frame.origin.y = 0
+
+        let timeLineView = TimeLineView(frame: frame)
+        timeLineView.delegate = self
+
+        timeLineWindow.addSubview(timeLineView)
+        timeLineView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+//            $0.centerX.centerY.equalToSuperview()
+        }
+
+
+        self.timeLineWindow = timeLineWindow
+        self.timeLineWindow?.makeKeyAndVisible()
     }
 }
 
-extension PlayerControlView: PlayerDelegate {
-//    func player(_ playerView: PlayerView, didPlayerStarted state: PlayerState) {
-//        switch state {
-//
-//        default:
-//            //
-//            break
-//        }
-//    }
-    
-    /// 영상 로딩 완료 후 처리
-    func player(_ playerView: PlayerView, didLoadedTimeChanged duration: TimeInterval) {
-        activityIndicatorView.stopAnimating()
-        [pausePlayButton, backwardButton, forwardButton]
-            .forEach { $0.isHidden = false }
-        
-        guard !(duration.isNaN || duration.isInfinite) else { return }
-        
-        let secondsText = Int(duration.truncatingRemainder(dividingBy: 60))
-        let minutesText = String(format: "%02d", Int(duration) / 60)
-        videoLengthLabel.text = "\(minutesText):\(secondsText)"
+extension PlayerControlView: TimeLineViewDelegate {
+    func didTimeLineTapped(with value: CMTime) {
+        delegate?.controlView(self, seekTo: value)
+        didCloseButtonTapped()
     }
     
-    /// Player 시간 흐름에 따른 뷰 업데이트
-    func player(_ playerView: PlayerView, didPlayTimeChanged currentTime: TimeInterval, totalTime: TimeInterval) {
-        guard !(totalTime.isNaN || totalTime.isInfinite) else {
-            return
-        }
-        self.currentTimeLabel.text = formatTime(Int(currentTime))
-        self.videoLengthLabel.text = formatTime(Int(totalTime))
-        self.videoSlider.value = Float(currentTime / totalTime)
-
-        if let subtitles = subtitles,
-            isSubtitleVisible == true
-        {
-            if let line = subtitles.search(for: currentTime) {
-                subtitleBackView.isHidden = false
-                subtitleLabel.text = line.text
-            } else {
-                subtitleBackView.isHidden = true
-            }
-        } else {
-            subtitleBackView.isHidden = true
-        }
-        
-        // PlayToTheEnd
-        if currentTime >= totalTime {
-            replayButton.isHidden = false
-            [pausePlayButton, backwardButton, forwardButton]
-                .forEach { $0.isHidden = true }
-        }
-    }
-    
-    func player(_ playerView: PlayerView, isPlayerPlaying isPlaying: Bool) {
-        if isPlaying {
-            self.pausePlayButton.setImage(systemName: "pause", size: 30)
-        } else {
-            self.pausePlayButton.setImage(systemName: "play", size: 30)
-        }
-    }
-    
-    func player(_ playerView: PlayerView, didChangePlayBackRate rate: SpeedRate) {
-        speedButton.setTitle(rate.title, for: .normal)
-    }
-    
-    func player(_ playerView: PlayerView, didLockScreen isLockScreen: Bool) {
-        if isLockScreen {
-            self.lockButton.setImage(systemName: "lock.fill", size: 18)
-        } else {
-            self.lockButton.setImage(systemName: "lock.open.fill", size: 18)
-        }
-        
-        [
-         backwardButton,
-         pausePlayButton,
-         forwardButton,
-         videoSlider,
-         fullScreenButton,
-         speedButton,
-         menuButton,
-         backButton,
-         subtitleButton,
-        ]
-            .forEach { $0.isUserInteractionEnabled = !isLockScreen }
+    func didCloseButtonTapped() {
+//        self.timeLineView.removeFromSuperview()
+        self.timeLineWindow?.removeFromSuperview()
+        self.timeLineWindow = nil
     }
 }
