@@ -28,6 +28,7 @@
 		6A81FBD9278C29ED0028532C /* PlayerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A81FBD8278C29ED0028532C /* PlayerControlView.swift */; };
 		6AD53BCE27B0D9F300574B46 /* TimeLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD53BCD27B0D9F300574B46 /* TimeLineView.swift */; };
 		6AD53BD027B0DDC100574B46 /* TimeLineCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD53BCF27B0DDC000574B46 /* TimeLineCollectionViewCell.swift */; };
+		6ADFADC627B1F64300B1F216 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 6ADFADC527B1F64300B1F216 /* .swiftlint.yml */; };
 		6AFB2F8E277D6E61006EC65D /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFB2F8D277D6E61006EC65D /* MainVC.swift */; };
 		6AFB2F90277D70B2006EC65D /* PlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFB2F8F277D70B2006EC65D /* PlayerVC.swift */; };
 		6AFB2F96277D9DB8006EC65D /* UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFB2F95277D9DB8006EC65D /* UIButton.swift */; };
@@ -58,6 +59,7 @@
 		6A81FBD8278C29ED0028532C /* PlayerControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlView.swift; sourceTree = "<group>"; };
 		6AD53BCD27B0D9F300574B46 /* TimeLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineView.swift; sourceTree = "<group>"; };
 		6AD53BCF27B0DDC000574B46 /* TimeLineCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineCollectionViewCell.swift; sourceTree = "<group>"; };
+		6ADFADC527B1F64300B1F216 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		6AFB2F8D277D6E61006EC65D /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		6AFB2F8F277D70B2006EC65D /* PlayerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerVC.swift; sourceTree = "<group>"; };
 		6AFB2F95277D9DB8006EC65D /* UIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButton.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 		6A45481D275F407000C1EA95 = {
 			isa = PBXGroup;
 			children = (
+				6ADFADC527B1F64300B1F216 /* .swiftlint.yml */,
 				6A454828275F407000C1EA95 /* VideoPlayerTest */,
 				6A454827275F407000C1EA95 /* Products */,
 				2156FDB4260F59026097BAAE /* Pods */,
@@ -120,10 +123,8 @@
 				6A454832275F407200C1EA95 /* Assets.xcassets */,
 				6A454834275F407200C1EA95 /* LaunchScreen.storyboard */,
 				6A454837275F407200C1EA95 /* Info.plist */,
-				6AFB2F8D277D6E61006EC65D /* MainVC.swift */,
-				6A81FBD2278BD5C20028532C /* VideoModel.swift */,
-				6A57CC0E2797CD3B00593ADB /* Subtitles.swift */,
-				6A81FBCE278BD3840028532C /* PlayerView */,
+				6ADFADC927B1FBC500B1F216 /* Models */,
+				6ADFADC827B1FBB400B1F216 /* Scenes */,
 				6A81FBCF278BD3900028532C /* Helper */,
 			);
 			path = VideoPlayerTest;
@@ -141,13 +142,13 @@
 		6A81FBCE278BD3840028532C /* PlayerView */ = {
 			isa = PBXGroup;
 			children = (
+				6AD53BD127B0E78F00574B46 /* TimeLineView */,
 				6A81FBCD278BCF870028532C /* MenuView */,
 				6AFB2F8F277D70B2006EC65D /* PlayerVC.swift */,
 				6A1878B32782E4E200878175 /* PlayerView.swift */,
 				6A81FBD8278C29ED0028532C /* PlayerControlView.swift */,
 				6A81FBD6278BF1DE0028532C /* PlayerTimeLineCell.swift */,
 				08AA0AC72786B4E10085CBBD /* SpeedRate.swift */,
-				6AD53BD127B0E78F00574B46 /* TimeLineView */,
 			);
 			path = PlayerView;
 			sourceTree = "<group>";
@@ -174,6 +175,24 @@
 			path = TimeLineView;
 			sourceTree = "<group>";
 		};
+		6ADFADC827B1FBB400B1F216 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				6A81FBCE278BD3840028532C /* PlayerView */,
+				6AFB2F8D277D6E61006EC65D /* MainVC.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		6ADFADC927B1FBC500B1F216 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6A81FBD2278BD5C20028532C /* VideoModel.swift */,
+				6A57CC0E2797CD3B00593ADB /* Subtitles.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		FE28E992E7F9E2289D8E60E4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,6 +213,7 @@
 				6A454823275F407000C1EA95 /* Frameworks */,
 				6A454824275F407000C1EA95 /* Resources */,
 				DEEB5BC556F804C7FC453884 /* [CP] Embed Pods Frameworks */,
+				6ADFADC727B1F6AC00B1F216 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -242,6 +262,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6ADFADC627B1F64300B1F216 /* .swiftlint.yml in Resources */,
 				6A454836275F407200C1EA95 /* LaunchScreen.storyboard in Resources */,
 				6A81FBD1278BD4D80028532C /* videoInfo.json in Resources */,
 				6A454833275F407200C1EA95 /* Assets.xcassets in Resources */,
@@ -273,6 +294,23 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		6ADFADC727B1F6AC00B1F216 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint\n";
 		};
 		DEEB5BC556F804C7FC453884 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

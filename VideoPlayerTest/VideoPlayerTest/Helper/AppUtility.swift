@@ -26,7 +26,6 @@ struct AppUtility {
             }
         }
         
-        
         if let delegate = UIApplication.shared.delegate as? AppDelegate {
             delegate.orientationLock = orientationMask
         }

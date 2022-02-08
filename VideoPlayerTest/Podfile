@@ -9,4 +9,5 @@ target 'VideoPlayerTest' do
   pod "Player", "~> 0.13.2"
   pod 'BMPlayer', '~> 1.3.0'
   pod 'FWPlayer'
+  pod 'SwiftLint'
 end

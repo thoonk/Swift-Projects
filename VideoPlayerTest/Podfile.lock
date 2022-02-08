@@ -12,11 +12,13 @@ PODS:
   - NVActivityIndicatorView/Presenter (4.7.0)
   - Player (0.13.3)
   - SnapKit (5.0.1)
+  - SwiftLint (0.46.1)
 
 DEPENDENCIES:
   - BMPlayer (~> 1.3.0)
   - FWPlayer
   - Player (~> 0.13.2)
+  - SwiftLint
 
 SPEC REPOS:
   trunk:
@@ -25,6 +27,7 @@ SPEC REPOS:
     - NVActivityIndicatorView
     - Player
     - SnapKit
+    - SwiftLint
 
 SPEC CHECKSUMS:
   BMPlayer: e4b241bd088644d7b89d991a1a65d1b1615d19b3
@@ -32,7 +35,8 @@ SPEC CHECKSUMS:
   NVActivityIndicatorView: b19ddab2576f805cbe0fb2306cba3476e09a1dea
   Player: e1889a481f14b3bc4065b62bed304c3de3b47dfe
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SwiftLint: aaa29a9f649316095a9079595cb60906bd899353
 
-PODFILE CHECKSUM: cf6575a0e3d7442f10d6efa8fd5f722f83e9ab77
+PODFILE CHECKSUM: 07b1f6a5ff9fd058f6fe82caecdd7ad321cc54a4
 
 COCOAPODS: 1.11.2

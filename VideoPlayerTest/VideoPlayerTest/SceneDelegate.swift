@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navigationController = UINavigationController(rootViewController: MainVC())
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
-        AppDelegate.shared.window = window
+//        AppDelegate.shared.window = window
         
         screenProtector.setupPreventingRecording()
         screenProtector.setupPreventingCapturing()
@@ -53,16 +53,16 @@ private extension SceneDelegate {
     func presentingVC() {
         if #available(iOS 13.0, *) {
             let sceneDelegate = UIApplication.shared.connectedScenes
-                .first!.delegate as! SceneDelegate
-            if let playerVC = topViewController(base: sceneDelegate.window!.rootViewController) as? PlayerVC {
+                .first!.delegate as? SceneDelegate
+            if let playerVC = topViewController(base: sceneDelegate?.window!.rootViewController) as? PlayerVC {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                     playerVC.pipController?.stopPictureInPicture()
                 }
             }
         } else {
-            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
             
-            if let playerVC = topViewController(base: appDelegate.window!.rootViewController) as? PlayerVC {
+            if let playerVC = topViewController(base: appDelegate?.window!.rootViewController) as? PlayerVC {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                     playerVC.pipController?.stopPictureInPicture()
                 }

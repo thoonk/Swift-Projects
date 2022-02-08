@@ -12,9 +12,6 @@ import AVFAudio
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    static var shared: AppDelegate {
-        UIApplication.shared.delegate as! AppDelegate
-    }
     
     var orientationLock = UIInterfaceOrientationMask.all
 
@@ -37,4 +34,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 }
-
