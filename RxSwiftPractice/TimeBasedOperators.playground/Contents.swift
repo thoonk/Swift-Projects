@@ -112,7 +112,7 @@ print("------delaySubscription------")
 //
 //var delayCnt = 0
 //let delayTimerSource = DispatchSource.makeTimerSource()
-//delayTimerSource.schedule(deadline: .now() + 2, repeating: .seconds(1))
+//delayTimerSource.schedule(deadline: .now(), repeating: .seconds(1))
 //delayTimerSource.setEventHandler {
 //    delayCnt += 1
 //    delaySource.onNext("\(delayCnt)")
@@ -121,6 +121,17 @@ print("------delaySubscription------")
 //
 //delaySource
 //    .delaySubscription(.seconds(5), scheduler: MainScheduler.instance)
+//    .take(5)
+//    .subscribe(onNext: {
+//        print($0)
+//    })
+//    .disposed(by: bag)
+
+//Observable<Int>
+//    .interval(.seconds(1), scheduler: MainScheduler.instance)
+//    .take(5)
+//    .debug()
+//    .delaySubscription(.seconds(3), scheduler: MainScheduler.instance)
 //    .subscribe(onNext: {
 //        print($0)
 //    })
@@ -128,23 +139,34 @@ print("------delaySubscription------")
 
 print("------delay------")
 // 시퀀스 자체를 뒤로 미룸
-let delaySubject = PublishSubject<Int>()
+//let delaySubject = PublishSubject<Int>()
 
-var delayCnt = 0
-let delayTimerSource = DispatchSource.makeTimerSource()
-delayTimerSource.schedule(deadline: .now(), repeating: .seconds(1))
-delayTimerSource.setEventHandler {
-    delayCnt += 1
-    delaySubject.onNext(delayCnt)
-}
-delayTimerSource.resume()
+//var delayCnt = 0
+//let delayTimerSource = DispatchSource.makeTimerSource()
+//delayTimerSource.schedule(deadline: .now(), repeating: .seconds(1))
+//delayTimerSource.setEventHandler {
+//    delayCnt += 1
+//    delaySubject.onNext(delayCnt)
+//}
+//delayTimerSource.resume()
 
-delaySubject
-    .delay(.seconds(3), scheduler: MainScheduler.instance)
-    .subscribe(onNext: {
-        print($0)
-    })
-    .disposed(by: bag)
+//delaySubject
+//    .delay(.seconds(3), scheduler: MainScheduler.instance)
+//    .subscribe(onNext: {
+//        print($0)
+//    })
+//    .disposed(by: bag)
+
+//Observable<Int>
+//    .interval(.seconds(1), scheduler: MainScheduler.instance)
+//    .delay(.seconds(3), scheduler: MainScheduler.instance)
+//    .take(3)
+//    .subscribe(onNext: {
+//        print($0)
+//    })
+//
+//    .disposed(by: bag)
+
 
 print("------interval------")
 //Observable<Int>
@@ -170,21 +192,21 @@ print("------timer------")
 
 print("------timeout------")
 // 설정된 시간을 초과하면 에러 방출
-//let button = UIButton(type: .system)
-//button.setTitle("눌러주세요", for: .normal)
-//button.sizeToFit()
-//
-//PlaygroundPage.current.liveView = button
-//
-//button.rx.tap
-//    .do(onNext: {
-//        print("tapped")
-//    })
-//    .timeout(.seconds(5), scheduler: MainScheduler.instance)
-//    .subscribe(onNext: {
-//        print($0)
-//    })
-//    .disposed(by: bag)
+let button = UIButton(type: .system)
+button.setTitle("눌러주세요", for: .normal)
+button.sizeToFit()
+
+PlaygroundPage.current.liveView = button
+
+button.rx.tap
+    .do(onNext: {
+        print("tapped")
+    })
+    .timeout(.seconds(5), scheduler: MainScheduler.instance)
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
 
 print("------debounce------")
 //let button = UIButton(type: .system)
