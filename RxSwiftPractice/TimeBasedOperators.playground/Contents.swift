@@ -20,25 +20,42 @@ let bag = DisposeBag()
 //        print($0)
 //    })
 //    .disposed(by: bag)
-//
 //// 구독 시점 이후에 발생한 이벤트이기 때문에 버퍼와 상관없이 방출됨
 //greetings.onNext("4. What's up?")
+
+//let replaySubject = PublishSubject<String>()
+//let replayOperator = replaySubject
+//    .replay(2)
+//replayOperator.connect()
 //
-//print("------replayAll------")
-//let doctorStrange = PublishSubject<String>()
-//let timeStone = doctorStrange.replayAll()
-//timeStone.connect()
+//replaySubject.onNext("RxSwift")
+//replaySubject.onNext("Hellow")
+//replaySubject.onNext("World")
 //
-//doctorStrange.onNext("Dormammu")
-//doctorStrange.onNext("I've come to bargain.")
-//doctorStrange.onNext("Dormammu")
-//doctorStrange.onNext("I've come to bargain.")
-//
-//timeStone
+//replayOperator
 //    .subscribe(onNext: {
 //        print($0)
 //    })
 //    .disposed(by: bag)
+//
+//replaySubject.onNext("End.")
+
+
+print("------replayAll------")
+let doctorStrange = PublishSubject<String>()
+let timeStone = doctorStrange.replayAll()
+timeStone.connect()
+
+doctorStrange.onNext("Dormammu")
+doctorStrange.onNext("I've come to bargain.")
+doctorStrange.onNext("Dormammu")
+doctorStrange.onNext("I've come to bargain.")
+
+timeStone
+    .subscribe(onNext: {
+        print($0)
+    })
+    .disposed(by: bag)
 
 print("------buffer------")
 // buffer는 array를 방출
@@ -192,21 +209,21 @@ print("------timer------")
 
 print("------timeout------")
 // 설정된 시간을 초과하면 에러 방출
-let button = UIButton(type: .system)
-button.setTitle("눌러주세요", for: .normal)
-button.sizeToFit()
-
-PlaygroundPage.current.liveView = button
-
-button.rx.tap
-    .do(onNext: {
-        print("tapped")
-    })
-    .timeout(.seconds(5), scheduler: MainScheduler.instance)
-    .subscribe(onNext: {
-        print($0)
-    })
-    .disposed(by: bag)
+//let button = UIButton(type: .system)
+//button.setTitle("눌러주세요", for: .normal)
+//button.sizeToFit()
+//
+//PlaygroundPage.current.liveView = button
+//
+//button.rx.tap
+//    .do(onNext: {
+//        print("tapped")
+//    })
+//    .timeout(.seconds(5), scheduler: MainScheduler.instance)
+//    .subscribe(onNext: {
+//        print($0)
+//    })
+//    .disposed(by: bag)
 
 print("------debounce------")
 //let button = UIButton(type: .system)
